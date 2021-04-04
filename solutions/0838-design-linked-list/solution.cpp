@@ -20,137 +20,295 @@ public:
     /** Get the value of the index-th node in the linked list. If the index is invalid, return -1. */
     int get(int index) 
     {
-        if(head == NULL)  {return -1;}
-        if(index >= size) {return -1;}
         
-        ListNode1* current = head;
+           if(index>=size or index<0){
+               return -1;
+           }
         
-        while(index != 0)
-        {
-            if(current != NULL)
-            {
-                current = current->next;
-            }
-            index--;
-        }
+           if(head == NULL){
+               return -1;
+           }
         
-        if(current != NULL) {return(current->val);}
-        else {return NULL;}
+        ListNode1 * curr=this->head;
+           while(index-- >0){
+               
+               curr = curr->next;
+           }
+          return curr->val;
+           
+        
+//         if(head == NULL)  {return -1;}
+//         if(index >= size) {return -1;}
+        
+//         ListNode1* current = head;
+        
+//         while(index != 0)
+//         {
+//             if(current != NULL)
+//             {
+//                 current = current->next;
+//             }
+//             index--;
+//         }
+        
+//         if(current != NULL) {return(current->val);}
+//         else {return NULL;}
     }
     
     /** Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list. */
     void addAtHead(int val) 
     {
+        
         ListNode1* newNode = new ListNode1;
-
-        newNode->val  = val;
-        newNode->next = head;
+        
         newNode->prev = NULL;
-
-        if(head != NULL)
-        {
+        newNode->next = this->head;
+        newNode->val = val;
+        
+        if(this->head!=NULL){
             head->prev = newNode;
         }
-        head = newNode;
-        size++;
+        this->head = newNode;
+    
+        this->size++;
+        
+        
+        
+//         ListNode1* newNode = new ListNode1;
+
+//         newNode->val  = val;
+//         newNode->next = head;
+//         newNode->prev = NULL;
+
+//         if(head != NULL)
+//         {
+//             head->prev = newNode;
+//         }
+//         head = newNode;
+//         size++;
     }
     
     /** Append a node of value val to the last element of the linked list. */
     void addAtTail(int val) 
     {
-        if(head == NULL) {addAtHead(val);return;}
-
-        ListNode1 *newNode = new ListNode1;
-        ListNode1 *current = head;
-        newNode->val  = val;
-        newNode->next = NULL;
         
-        // Go to end of list
-        while(current->next != NULL)
-        {
-            current  = current->next;
+        
+        ListNode1* newNode = new ListNode1(val);
+        
+        if(this->head==NULL){
+            this->head = newNode;
+            size++;
+            return;
         }
         
-        if(current != NULL)
-        {
-            current->next = newNode;
-        }
-        newNode->prev = current;
+        ListNode1* curr = this->head;
         
+        while(curr->next!=NULL){
+            curr = curr->next;
+        }
+        
+        curr->next = newNode;
+        newNode->prev = curr;
         size++;
+        
+        
+        
+//         if(head == NULL) {addAtHead(val);return;}
+
+//         ListNode1 *newNode = new ListNode1;
+//         ListNode1 *current = head;
+//         newNode->val  = val;
+//         newNode->next = NULL;
+        
+//         // Go to end of list
+//         while(current->next != NULL)
+//         {
+//             current  = current->next;
+//         }
+        
+//         if(current != NULL)
+//         {
+//             current->next = newNode;
+//         }
+//         newNode->prev = current;
+        
+//         size++;
     }
     
     /** Add a node of value val before the index-th node in the linked list. If index equals to the length of linked list, the node will be appended to the end of linked list. If index is greater than the length, the node will not be inserted. */
     void addAtIndex(int index, int val) 
     {
-        if(index > size)   {return;}
-        if(index == 0)      {addAtHead(val); return; }
-        if(index == size)   {addAtTail(val); return; }
-
-        ListNode1 *current = head;
-        ListNode1 *newNode = new ListNode1;
-        newNode->val = val;
-
-        while(index >= 1)
-        {
-            current = current->next;
+        
+        if(index>size or index<0){
+            return;
+        }
+        
+        
+        if(index==0){
+            addAtHead(val) ;
+            return;
+        }
+        
+        if(index==size){
+            addAtTail(val);
+            return;
+        }
+        
+        ListNode1* newNode =  new ListNode1(val);
+        ListNode1* curr = head->next;
+        ListNode1* prevNode = head;
+        
+        while(index>1){
+            prevNode = curr;
+            curr = curr->next;
             index--;
         }
         
-        current->prev->next = newNode;
-        newNode->prev = current->prev;
-        newNode->next = current;
-        current->prev = newNode;
+        
+        prevNode->next = newNode;
+        newNode->prev = prevNode;
+        newNode->next = curr;
+        curr->prev = newNode;
+ 
         
         size++;
+        
+        
+        
+//         if(index > size)   {return;}
+//         if(index == 0)      {addAtHead(val); return; }
+//         if(index == size)   {addAtTail(val); return; }
+
+//         ListNode1 *current = head;
+//         ListNode1 *newNode = new ListNode1;
+//         newNode->val = val;
+
+//         while(index >= 1)
+//         {
+//             current = current->next;
+//             index--;
+//         }
+        
+//         current->prev->next = newNode;
+//         newNode->prev = current->prev;
+//         newNode->next = current;
+//         current->prev = newNode;
+        
+//         size++;
     }
     
     /** Delete the index-th node in the linked list, if the index is valid. */
     void deleteAtIndex(int index) 
     {
-        ListNode1 *previous = head;
-        ListNode1 *current  = head;
         
-        if(head == NULL) {return;}
-        if(index >= size){return;}
+        if(index<0 or index>=size){
+            return;
+        }
         
-        if(index == 0)
-        {
-            if(head->next != NULL)
-            {
-                head->next->prev = NULL;
-            }
-            ListNode1 *temp = head;
-            head = head->next;
+        if(head==NULL){
+            return;
+        }
+        
+        if(head->next==NULL){
+            delete head;
+            this->head = NULL;
+            return;
+        }
+        
+//         first node removal
+        if(index==0){
+            ListNode1* temp = head;
+            this->head = head->next;
+            head->prev = NULL;
             delete temp;
+            size--;
+            return;
         }
-        else if(index == size)
-        {
-            while(current->next != NULL)
-            {
-                previous = current;
-                current  = current->next;
+// last node removal
+        if(index==size-1){
+            ListNode1* curr = head;
+            ListNode1* temp;
+            while(curr->next->next!=NULL){
+                curr = curr->next;
             }
-            previous->next = NULL;
-            delete current;
-        }
-        else
-        {
-            while(index != 0)
-            {
-                previous = current;
-                current  = current->next;
-                index--;
-            }
-            if(current->next != NULL)
-            {
-                current->next->prev = previous;
-            }
-            previous->next = current->next;
+            temp = curr->next;
+            curr->next=NULL;
+            size--;
+            delete temp;
             
-            delete current;
+            return;
         }
-        size--;
+
+        
+        
+            ListNode1* curr = head->next;
+            ListNode1* prevNode = head;
+            ListNode1* temp;
+            while(index-->1){
+                prevNode = curr;
+                curr = curr->next;
+            }
+        
+            prevNode->next = curr->next;
+            curr->next->prev = prevNode;
+            size--;
+            delete curr;
+   
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+//         ListNode1 *previous = head;
+//         ListNode1 *current  = head;
+        
+//         if(head == NULL) {return;}
+//         if(index >= size){return;}
+        
+//         if(index == 0)
+//         {
+//             if(head->next != NULL)
+//             {
+//                 head->next->prev = NULL;
+//             }
+//             ListNode1 *temp = head;
+//             head = head->next;
+//             delete temp;
+//         }
+//         else if(index == size)
+//         {
+//             while(current->next != NULL)
+//             {
+//                 previous = current;
+//                 current  = current->next;
+//             }
+//             previous->next = NULL;
+//             delete current;
+//         }
+//         else
+//         {
+//             while(index != 0)
+//             {
+//                 previous = current;
+//                 current  = current->next;
+//                 index--;
+//             }
+//             if(current->next != NULL)
+//             {
+//                 current->next->prev = previous;
+//             }
+//             previous->next = current->next;
+            
+//             delete current;
+//         }
+//         size--;
     }
 };
 
