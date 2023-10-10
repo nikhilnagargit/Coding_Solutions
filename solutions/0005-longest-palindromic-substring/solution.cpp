@@ -1,47 +1,46 @@
 class Solution {
-public:
-    
-    
-    int expandFromMiddle(int i,int j,string& s,int n){
-//         base cases
-        if(i<0 or j>=n){return 0;}
-        
-        
-        while(i>=0 and j<n and s[i]==s[j]){
-            i--;
-            j++;
+
+    bool isPalindrome(string &s, int start, int end ) {
+
+        while( start <= end ) {
+
+            if( s[start] != s[end] )
+                return 0;
+            
+            start++;
+            end--;
         }
-        
-        return (j-i-1);
+
+        return 1;
     }
-    
-    
-    
+
+    string func( string &s, int start, int end ) {
+
+        string ans;
+
+        for( int i = start; i <= end; ++i ) {
+            ans+=s[i];
+        }
+
+        return ans;
+    }
+
+public:
     string longestPalindrome(string s) {
         
-//       base cases 
-        if(s.size()==0)
-        {return "";}
-        
-        if(s.size()==1){return s;}
-        
-        int len1;
-        int len2;
-        int max_len;
-        int start;
-        int end;
-        for(int i=0;i<s.size();i++){
-            len1 = expandFromMiddle(i,i,s,s.size());
-            len2 = expandFromMiddle(i,i+1,s,s.size());
-            max_len = max(len1,len2);
-            if(max_len>end-start+1){
-                 start = i - (max_len-1)/2;
-                 end = i + (max_len)/2; 
+        string ans;
+        int n = s.size();
+
+        for( int i = 0; i < n; ++i ) {
+
+            for( int j = i; j < n; ++j ) {
+
+                if( j-i+1 > ans.size() && isPalindrome(s, i, j) ) {
+                    ans = func(s, i, j );
+                }
             }
         }
-        
-        return s.substr(start,end-start+1);
-        
-        
+
+        return ans;
     }
 };
