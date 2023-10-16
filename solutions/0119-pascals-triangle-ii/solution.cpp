@@ -1,40 +1,23 @@
 class Solution {
 public:
-    
-
-    void solve(vector<int>& v,int rowIndex,int curr){
-        int temp1 = v[0];
-        int temp2 = v[1];
-        v.push_back(1);
-        for(int i=1;i<v.size()-1;i++){
-            v[i] = temp1 + temp2;
-            temp1 = temp2;
-            temp2 = v[i+1]; 
-        }   
-        
-        if(curr==rowIndex){
-            return;
-        }
-        curr=curr+1;
-        solve(v,rowIndex,curr);
-    }
-    
-    
     vector<int> getRow(int rowIndex) {
- 
-         vector<int> v;
-         v.push_back(1);
-               
+
+        vector<int>ans;
+        ans.push_back(1);
         if(rowIndex==0){
-            return v;
+            return ans;
         }
-        
-        v.push_back(1);
-        if(rowIndex==1){
-            return v;
+
+        for(int i=1;i<=rowIndex;i++){
+            ans.push_back(1);
+            int first = ans[0];
+            int second = ans[1];
+            for(int j=1;j<i;j++){
+                ans[j] = first+second;
+                first = second;
+                second = ans[j+1];
+            }
         }
-         solve(v,rowIndex,2);
-        
-        return v;
+        return ans;
     }
 };
