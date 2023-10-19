@@ -1,0 +1,29 @@
+/**
+ * @param {integer} init
+ * @return { increment: Function, decrement: Function, reset: Function }
+ */
+var createCounter = function(init) {
+    let c = init;
+    const increment = ()=>{
+        c+=1;
+        return c;
+    }
+    const decrement = ()=>{
+        c-=1;
+        return c;
+    }
+    const reset = ()=>{
+        c =init;
+        return c;
+    }
+    return {
+        increment,decrement,reset
+    }
+};
+
+/**
+ * const counter = createCounter(5)
+ * counter.increment(); // 6
+ * counter.reset(); // 5
+ * counter.decrement(); // 4
+ */
