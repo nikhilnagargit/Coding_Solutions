@@ -1,28 +1,35 @@
 class Solution {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
-        vector<int> previous(201,INT_MAX);
-        vector<int> current(201,INT_MAX);
-        previous[0] = triangle[0][0];
+        vector<int> prev;
+        vector<int> curr;
+        prev.push_back(triangle[0][0]);
+
+        if(triangle.size()==0){
+            return 0;
+        }
+        if(triangle.size()==1){
+            return triangle[0][0];
+        }
+
         for(int i=1;i<triangle.size();i++){
-            for(int j=0;j<=i;j++){
-                if(j-1>=0 and j<i){
-                    current[j] = triangle[i][j] + min(previous[j-1],previous[j]);
-                }
-                else if(j-1>=0){
-                    current[j] = triangle[i][j] + previous[j-1];
-                }
-                else{
-                    current[j] = triangle[i][j] + previous[j];
-                }
-                
+            for(int j=0;j<triangle[i].size();j++){
+                if(j==0)
+                curr.push_back(triangle[i][j]+prev[j]);
+                else if(j==triangle[i].size()-1)
+                curr.push_back(triangle[i][j]+prev[j-1]);
+                else
+                curr.push_back(triangle[i][j]+min(prev[j-1],prev[j]));
             }
-            for(int j=0;j<=i;j++){
-                previous[j] = current[j];
-            }
+            prev = curr;
+            curr.clear();
         }
         
-        return *min_element(previous.begin(),previous.end());
-        
+        // return minimum from prev
+        int mini = INT_MAX;
+        for(int i=0;i<prev.size();i++){
+            mini = min(mini,prev[i]);
+        }
+        return mini;
     }
 };
