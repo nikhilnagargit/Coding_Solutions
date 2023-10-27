@@ -1,46 +1,44 @@
 class Solution {
-
-    bool isPalindrome(string &s, int start, int end ) {
-
-        while( start <= end ) {
-
-            if( s[start] != s[end] )
-                return 0;
-            
-            start++;
-            end--;
-        }
-
-        return 1;
-    }
-
-    string func( string &s, int start, int end ) {
-
-        string ans;
-
-        for( int i = start; i <= end; ++i ) {
-            ans+=s[i];
-        }
-
-        return ans;
-    }
-
 public:
     string longestPalindrome(string s) {
-        
-        string ans;
-        int n = s.size();
+        int i=0;
+        int l=i;
+        int r=i;
+        string max_s="";
+        string temp_s="";
 
-        for( int i = 0; i < n; ++i ) {
-
-            for( int j = i; j < n; ++j ) {
-
-                if( j-i+1 > ans.size() && isPalindrome(s, i, j) ) {
-                    ans = func(s, i, j );
-                }
+        while(i<s.size()){
+            temp_s += s[i];
+            l = i-1;
+            r = i+1;
+            while(l>=0 and r<s.size() and s[l]==s[r]){
+                temp_s = s[l]+temp_s+s[r];
+                l--;
+                r++;
             }
+            if(max_s.size()<temp_s.size()){
+                max_s = temp_s;
+            }
+            i++;
+            temp_s = "";
         }
 
-        return ans;
+        i=0;
+        while(i<s.size()){
+            temp_s="";
+            l = i;
+            r = i+1;
+            while(l>=0 and r<s.size() and s[l]==s[r]){
+                temp_s = s[l]+temp_s+s[r];
+                l--;
+                r++;
+            }
+            if(max_s.size()<temp_s.size()){
+                max_s = temp_s;
+            }
+            i++;
+            temp_s = "";
+        }
+        return max_s;
     }
 };
