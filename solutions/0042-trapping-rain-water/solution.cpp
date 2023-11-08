@@ -1,31 +1,18 @@
 class Solution {
 public:
     int trap(vector<int>& height) {
-        int LtoR[height.size()];
-        int RtoL[height.size()];
-        
-        
-        int max=-1;
-        for(int i=0;i<height.size();i++){
-            if(height[i]>max){
-                max = height[i];
-            }
-            LtoR[i]= max;
+        int n = height.size();
+        vector<int> max_in_left(n);
+        max_in_left[0]= height[0];
+        for(int i=1;i<n;i++){
+            max_in_left[i] = max(max_in_left[i-1],height[i]);
         }
-        max= -1;
-        for(int i=height.size()-1;i>=0;i--){
-                if(height[i]>max){
-                max = height[i];
-            }
-            RtoL[i]= max;
+        max_in_left[n-1] = height[n-1];
+        int water=0;
+        for(int i=n-2;i>=0;i--){
+            max_in_left[i]= min(max_in_left[i],max(max_in_left[i+1],height[i]));
+            water+=max_in_left[i]-height[i];
         }
-        
-        int sum=0;
-        
-          for(int i=0;i<height.size();i++){
-              // cout<<LtoR[i]<<" "<<RtoL[i]<<endl;
-              sum+= min(LtoR[i],RtoL[i])-height[i];
-          }
-        return sum;
+        return water;
     }
 };
