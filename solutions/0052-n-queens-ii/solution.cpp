@@ -1,69 +1,54 @@
 class Solution {
 public:
-    int matrix[10][10];
-    bool safe[10][10];
-    
-    bool is_safe(int i,int j, int n){
-        
-    
-        
-//         check this row
-        for(int a=0;a<i;a++){
-            if(matrix[a][j]==1){
+    int count;
+    bool checkValid(vector<string> &board, int row, int col, int size){
+
+        // check top up
+        for(int i = row-1;i>=0; i--){
+            if(board[i][col] == 'Q'){
                 return false;
             }
         }
 
-        for(int a=0;a<j;a++){
-            if(matrix[i][a]==1){
-                return false;
+        // check diagonal
+        for(int i = 1; i<=row; i++){
+            if(col-i>=0){
+                // left diagonal
+                if(board[row-i][col-i] == 'Q'){
+                    return false;
+                }
             }
-        }
-        
-        int I= i;
-        int J = j;
-        while(I>=0 and I<=n and J>=0 and J<=n){
-            if(matrix[I][J]==1){
-                return false;
+            if(col+i <size){
+                // right diagonal
+                if(board[row-i][col+i] == 'Q'){
+                    return false;
+                }
             }
-            I--;
-            J--;   
-        }
-        I=i;
-        J=j;
-        while(I>=0 and I<=n and J>=0 and J<=n){
-            if(matrix[I][J]==1){
-                return false;
-            }
-            I--;
-            J++;
         }
         return true;
     }
-    
-    int solve(int n,int row,int count){
-        
-        if(n==row){
-            return 1;
-        }    
-    
-        for(int i=0;i<n;i++){
-            if(is_safe(row,i,n)){
- 
-                matrix[row][i] = 1;
-                 if(row == n-1)
-                      count += 1;
-                 else
-                      count = solve(n,row+1,count);
-                
-                matrix[row][i] = 0;       
+
+
+    void helper(vector<string> &board, int row, int size){
+        if(row == size){
+            count++;
+            return;
+        }
+
+        for(int i = 0; i<size; i++){
+            if(checkValid(board, row, i, size)){
+                board[row][i] = 'Q';
+                helper(board, row+1, size);
+                board[row][i] = '.';
             }
         }
-        return count;
-        
     }
-    
     int totalNQueens(int n) {
-        return solve(n,0,0);
+        string str;
+        str.append(n, '.');
+        vector<string> board(n, str);
+        count = 0;
+        helper(board, 0, n);
+        return count;
     }
 };
