@@ -11,17 +11,25 @@
  */
 class Solution {
 public:
-    void recursion(TreeNode* root,int level,vector<int> &ans){
-        if(root==NULL)
-        return;
-        if(ans.size()==level)
-        ans.push_back(root->val);
-        recursion(root->right,level+1,ans);
-        recursion(root->left,level+1,ans);
-    }
     vector<int> rightSideView(TreeNode* root) {
-        vector<int> ans;
-        recursion(root,0,ans);
+        deque<TreeNode*> q;
+        q.push_front(root);
+        vector<int>ans;
+        if(!root)return ans;
+        while(!q.empty()){
+            ans.push_back(q.back()->val);
+            int n= q.size();
+            for(int i=0;i<n;i++){
+                TreeNode* curr = q.front();q.pop_front();
+                if(curr->left){
+                    q.push_back(curr->left);
+                }
+                if(curr->right){
+                    q.push_back(curr->right);
+                }
+            }
+        }
+        
         return ans;
     }
 };
