@@ -1,19 +1,30 @@
 class Solution {
 public:
-    int solve(int i,int j, string& w1,string& w2,vector<vector<int>>&m){
-        if(j==w2.size())return (w1.size()-i);
-        if(i==w1.size())return (w2.size()-j);
-        if(m[i][j]!=-1){
-            return m[i][j];
+    vector<vector<int>> dp;
+    int solve(string& word1,string& word2,int i,int j){
+        if(dp[i][j]!=-1){
+            return dp[i][j];
         }
-        if(w1[i]==w2[j]){
-            return m[i][j]=solve(i+1,j+1,w1,w2,m);
+        if(j==word2.size()){
+            return (word1.size()-i);
         }
-        return m[i][j]=1+min(solve(i,j+1,w1,w2,m),min(solve(i+1,j+1,w1,w2,m),solve(i+1,j,w1,w2,m)));
+        if(i==word1.size()){
+            return (word2.size()-j);
+        }
+        if(word1[i]==word2[j]){
+            return  dp[i][j]= solve(word1,word2,i+1,j+1);
+        }
+        int result ;
+        result = min(solve(word1,word2,i+1,j),solve(word1,word2,i+1,j+1));
+        result = min(result,solve(word1,word2,i,j+1));        
+        return dp[i][j]=1+result;
     }
 
     int minDistance(string word1, string word2) {
-        vector<vector<int>> m (word1.size()+1,vector<int>(word2.size()+1,-1));
-        return solve(0,0,word1,word2,m);
+        if(word1.size()<word2.size()){
+            minDistance(word2,word1);
+        }
+        dp = vector<vector<int>>(501,vector<int>(501,-1));
+        return solve(word1,word2,0,0);
     }
 };
