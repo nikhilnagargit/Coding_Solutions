@@ -1,52 +1,57 @@
-class Node{
-    public:
-    Node* links[26];
-    bool flag = false;
-};
 
 class Trie {
 public:
+    class Node{
+        public:
+            bool isEnd;
+            vector<Node*> children;
+            Node(){
+                isEnd = false;
+                children = vector<Node*>(26,nullptr);
+            }
+    };
+
     Node* root;
+
     Trie() {
         root = new Node();
     }
     
     void insert(string word) {
         Node* curr = root;
-        for(int i=0;i<word.length();i++){
-            char c = word[i];
-            if(curr->links[c-'a']==NULL)
-                curr->links[c-'a'] = new Node();
-            curr = curr->links[c-'a'];
+        for(auto c:word){
+            if(curr->children[c-'a']==nullptr){
+                curr->children[c-'a'] = new Node();
+            }
+            curr = curr->children[c-'a'];
         }
-        curr->flag = true;
+        curr->isEnd = true;
+        
     }
     
     bool search(string word) {
         Node* curr = root;
-        for(int i=0;i<word.length();i++){
-            char c = word[i];
-            if(curr->links[c-'a']==NULL){
+        for(auto c:word){
+            if(curr->children[c-'a']==nullptr){
                 return false;
             }
-            curr = curr->links[c-'a'];
+            curr = curr->children[c-'a'];
         }
-        if(curr->flag==false){
+        if(curr->isEnd==false){
             return false;
         }
         return true;
     }
     
     bool startsWith(string word) {
-                Node* curr = root;
-        for(int i=0;i<word.length();i++){
-            char c = word[i];
-            if(curr->links[c-'a']==NULL){
+        Node* curr = root;
+        for(auto c:word){
+            if(curr->children[c-'a']==nullptr){
                 return false;
             }
-            curr = curr->links[c-'a'];
+            curr = curr->children[c-'a'];
         }
-        return true;
+        return true;   
     }
 };
 
