@@ -1,54 +1,32 @@
 class Solution {
 public:
-    int numDecodings(string s) {
-        if(s.size()==0 ){
-            return 0;
-        }
-        
-       
-            if(s[0]=='0'){
-                return 0;
-            }
-
-        
-        if(s.size()==1){
+    int solve(string& s,int idx,vector<int>& dp){
+        if(idx==s.size()){
             return 1;
         }
-   
-        
-        
-        int prevprev = 1;
-        int prev = 1;
-        int temp;
-        
-        for(int i=1;i<s.size();i++){
-            if(s[i]=='0' and s[i-1]=='0'){
-                   return 0; 
-            }
-        
-            else if(s[i]=='0'){
-                if(s.substr(i-1,2)>"26"){
-                    return 0;
-                }
-               prev=prevprev;
-            }
-            else if(s[i-1]=='0'){
-                prevprev= prev;
-            }
-            else if( s.substr(i-1,2)>"26"){
-                prev=prev;
-                prevprev = prev;
-            }
-            else{
-                temp = prev+prevprev;
-                prevprev= prev;
-                prev = temp;
-            }
- 
+        if(dp[idx]!=-1){
+            return dp[idx];
         }
-        
-        
-        return prev;
+        if(s[idx]=='0'){
+            return 0;
+        }
+        int singleDigitDecodeWays = solve(s,idx+1,dp);
+        int doubleDigitDecodeWays = 0;
+        if(idx<s.size()-1){
+            int first =  s[idx]-'0';
+            int second = s[idx+1]-'0';
+            int num = first*10+second;
+            if(first==0){
+
+            }
+            else if(num<=26){
+                doubleDigitDecodeWays = solve(s,idx+2,dp);
+            }
+        }
+        return dp[idx]= singleDigitDecodeWays+doubleDigitDecodeWays;
     }
-    
+    int numDecodings(string s) {
+        vector<int>dp(s.size()+1,-1);
+        return solve(s,0,dp);
+    }
 };
