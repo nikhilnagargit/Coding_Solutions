@@ -2,14 +2,15 @@ class RandomizedSet {
 public:
     unordered_set<int> s;
     RandomizedSet() {
+        
     }
     
     bool insert(int val) {
-        if(s.find(val)!=s.end()){
-            return false;
+        if(s.find(val)==s.end()){
+            s.insert(val);
+            return true;
         }
-        s.insert(val);
-        return true;
+        return false;
     }
     
     bool remove(int val) {
@@ -21,9 +22,11 @@ public:
     }
     
     int getRandom() {
-          auto r = rand() % s.size(); // not _really_ random
-          auto it = next(s.begin(),r);
-         return *it;
+        unordered_set<int>::iterator it = s.begin();
+        int n  = rand()%(s.size());
+        advance(it, n);
+        int x = *it;
+        return x;
     }
 };
 
