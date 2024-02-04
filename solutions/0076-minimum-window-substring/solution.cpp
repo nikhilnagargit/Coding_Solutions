@@ -1,50 +1,83 @@
 class Solution {
 public:
     string minWindow(string s, string t) {
-        if(s.size()<t.size()){
-            return "";
+        if(s.size()<t.size()) return "";
+        unordered_map<char,int> tmap ;
+        unordered_map<char,int> wmap;
+        int minw = INT_MAX;
+        int minleft = INT_MAX;
+        int minright = INT_MAX;
+        for(auto c:t){
+            tmap[c]++;
         }
-        unordered_map<char,int> target_map;
-        unordered_map<char,int> curr_map;
-        for(auto item:t){
-            target_map[item]++;
+        int count_w_ele = 0;
+        int idx=0;
+        while(idx<s.size()){
+            if(tmap.contains(s[idx])){
+                if(wmap[s[idx]]<tmap[s[idx]]){
+                    wmap[s[idx]]++;
+                    count_w_ele++;
+                }
+                else{
+                    wmap[s[idx]]++;
+                }
+                break;
+            }
+            idx++;
         }
-        int count_to_meet = target_map.size();
-        int left=0;
-        int right=0;
-        int count_met = 0;
-        int min_start=INT_MAX;
-        int min_len = INT_MAX;
-
-        
-        while(right<s.size()){
-            char curr = s[right];
-            if(target_map.find(curr)!=target_map.end()){
-                curr_map[curr]++;
-                if(curr_map[curr]==target_map[curr]){
-                    count_met+=1;
+        int left = idx;
+        idx = left+1;
+        while(idx<s.size() and count_w_ele!=t.size()){
+            if(tmap.contains(s[idx])){
+                if(wmap[s[idx]]<tmap[s[idx]]){
+                    wmap[s[idx]]++;
+                    count_w_ele++;
+                }
+                else{
+                    wmap[s[idx]]++;
                 }
             }
-            while(count_met==count_to_meet){
-                //save result and start shrinking from left side.
-                if(min_len>=right-left+1){
-                    min_start = left;
-                    min_len = right-left+1;
-                }
-                if(curr_map.find(s[left])!=curr_map.end()){
-                    curr_map[s[left]]--;
-                    if(curr_map[s[left]]<target_map[s[left]]){
-                        count_met--;
-                    }
-                }
+            idx++;
+        }
+  
+        int right = idx-1;
+    
+
+        minleft = left;
+        minright =right;
+        minw = right-left+1;
+        if(right+1==s.size() and count_w_ele!=t.size()){
+            return "";
+        }
+        while(left<s.size() and right<s.size()){
+                cout<<"left:"<<left<<" right:"<<right<<endl;
+            // decrease the window first
+            if(wmap[s[left]]<=tmap[s[left]]){
+                count_w_ele--;
+            }
+            wmap[s[left]]--;
+            left++;
+            while(left<s.size() and !tmap.contains(s[left]))
                 left++;
+            
+            // increase the window
+            
+            while(right<s.size() and count_w_ele!=t.size()){
+                right++;
+                while(right<s.size() and !tmap.contains(s[right]))
+                    right++;
+                if(wmap[s[right]]+1 == tmap[s[right]]){
+                    count_w_ele++;
+                }
+                wmap[s[right]]++;               
+            } 
+            if(count_w_ele==t.size() and minw>(right-left+1)){
+                minw = right-left+1;
+                minright = right;
+                minleft = left;
             }
-            right++;
         }
-        if(min_start==INT_MAX){
-            return "";
-        }
-        return s.substr(min_start,min_len);
-
+        cout<<count_w_ele;
+        return s.substr(minleft,minright-minleft+1);
     }
 };
