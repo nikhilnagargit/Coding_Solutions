@@ -1,34 +1,16 @@
 class Solution {
 public:
     long long largestPerimeter(vector<int>& nums) {
-        if(nums.size()<3){
-            return -1;
-        }
         sort(nums.begin(),nums.end(),greater<int>());
-        long long i = 0 ;
-        // cout<<endl;
-        // for(int k=0;k<nums.size();k++){
-        //     cout<<nums[k]<<",";
-        // }
-        // cout<<endl;
-        long long totalsum = 0;
-        for(auto item:nums){
-            totalsum+=item;
-        }
-        // cout<<totalsum<<endl;
-        while(i<=nums.size()-3){
-            long long curr = nums[i];
-            
-            if((totalsum-curr)>curr){
-                return totalsum;
+        long long sum = accumulate(nums.begin(),nums.end(),static_cast<long long>(0));
+        for(long long i=0;i<nums.size();i++){
+            long long side = nums[i];
+            sum = sum-side;
+            if(sum>side){
+                return sum+side;
             }
-            
-                totalsum = totalsum-curr;
-            
-            i++;
         }
         return -1;
-        
 
     }
 };
