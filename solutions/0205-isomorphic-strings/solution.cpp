@@ -31,7 +31,7 @@ public:
             }
         }
 
-        cout<<code1<<" "<<code2;
+       
         if(code1==code2){
             return true;
         }
