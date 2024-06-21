@@ -1,32 +1,44 @@
 class Solution {
 public:
-    unordered_map<string,int>dp;
-    int solve(vector<int>& prices,int& fee,int action,int i){
-        string s = to_string(action)+"-"+to_string(i);
-        if(dp.find(s)!=dp.end()){
-            return dp[s];
+     unordered_map<string,int>m;
+//action  = 0 buy, action = 1 i will sell
+    int solve(vector<int>&prices, int& fee, int idx,int action)
+    {
+        if(idx==prices.size()-1 and action==1){
+             return prices[idx]-fee; 
         }
-        if(i==prices.size()-1 and action==-1){
-            return prices[i]-fee;
+
+        if(idx==prices.size()-1 and action==0){
+             return 0;
         }
-        if(i==prices.size()-1 and action==1){
-            return 0;
+       string key = to_string(idx)+"-"+to_string(action);
+      if(m.find(key)!=m.end()){
+            return m[key];
         }
-        int result = solve(prices,fee,action,i+1);
-        // buy 
+
+int case1  = 0;
+int case2 = 0;
+int case3 = 0;
+
+        if(action==0){
+            //i can buy current index stock
+            case1 = solve(prices,fee,idx+1,1) - prices[idx];
+            //i can skip
+        }
+
         if(action==1){
-            result = max(result,solve(prices,fee,-1,i+1)-prices[i]);
+            //i can sell current stock
+            case2 = solve(prices,fee,idx+1,0)-fee+prices[idx];
+    
+
         }
-        // sell
-        else if(action==-1){
-            result = max(result,solve(prices,fee,1,i+1)+prices[i]-fee);
-        }
-        // do nothing
-        
-        dp[s]=result;
-        return result;
+        case3 = solve(prices,fee,idx+1,action);
+
+        return m[key]=max(case1,max(case2,case3));
+
+
     }
     int maxProfit(vector<int>& prices, int fee) {
-        return solve(prices,fee,1,0);
+     return solve(prices,fee,0,0);   
     }
 };
