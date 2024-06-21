@@ -1,64 +1,89 @@
 class Solution {
 public:
-    bool isvalid(int M,int N, int i,int j){
-        if(i<0 or i>=M or j<0 or j>=N){
-            return false;
-        }
-        return true;
-    }
+
 
     int orangesRotting(vector<vector<int>>& grid) {
-        queue<pair<int,int>>q;
-        int fresh_oranges_count = 0;
-        int M = grid.size();
-        int N = grid[0].size();
-        for(int i=0;i<M;i++){
-            for(int j=0;j<N;j++){
+        int N = grid.size();
+        int M = grid[0].size();
+        vector<vector<bool>> visited(N,vector<bool>(M,0));
+        queue<pair<int,int>> q;
+
+        for(int i=0;i<N;i++){
+            for(int j=0;j<M;j++){
                 if(grid[i][j]==2){
                     q.push({i,j});
                 }
-                else if(grid[i][j]==1){
-                    fresh_oranges_count++;
-                }
             }
         }
-        if(fresh_oranges_count==0){
-            return 0;
-        }
-        int converted_count = 0;
-        int time = 0 ;
+        int counter = 0;
+int flag = 1;
+             for(int i=0;i<N;i++){
+                    for(int j=0;j<M;j++){
+                        if(grid[i][j]==1){
+                            flag = 0;
+                        }
+                    }
+                }
+
+if(flag==1){
+    return 0;
+}
         while(!q.empty()){
-            int sz = q.size();
-            for(int i=0;i<sz;i++){
-                pair<int,int> curr = q.front();q.pop();
-                int a = curr.first;
-                int b = curr.second;
-                int value = grid[a][b];
-                if(value==3){
+
+             //check if complete grid is rotten
+                int flag = 1;
+                for(int i=0;i<N;i++){
+                    for(int j=0;j<M;j++){
+                        if(grid[i][j]==1){
+                            flag = 0;
+                        }
+                    }
+                }
+                if(flag == 1){
+                    return counter;
+                }
+
+            int s = q.size();
+
+            for(int k=0;k<s;k++){
+                pair<int,int> p = q.front();q.pop();
+                if(visited[p.first][p.second]){
                     continue;
                 }
-                grid[a][b] = 3;
-                if(value==1){
-                    converted_count++;
+                visited[p.first][p.second]= 1;
+                int i = p.first;
+                int j = p.second;
+                if(i+1<N and  grid[i+1][j]==1){
+                    grid[i+1][j] = 2;
+                    if(!visited[i+1][j]){
+                        q.push({i+1,j});
+                    }
                 }
-                if(isvalid(M,N,a+1,b) and grid[a+1][b]!=3 and grid[a+1][b]!=0){
-                    q.push({a+1,b});
+                if(j+1<M and grid[i][j+1]==1){
+                    grid[i][j+1] = 2;
+                    if(!visited[i][j+1]){
+                        q.push({i,j+1});
+                    }
                 }
-                if(isvalid(M,N,a,b+1) and grid[a][b+1]!=3 and grid[a][b+1]!=0 ){
-                    q.push({a,b+1});
+                if(i-1>=0 and  grid[i-1][j]==1){
+                    grid[i-1][j] = 2;
+                    if(!visited[i-1][j]){
+                        q.push({i-1,j});
+                    }
                 }
-                if(isvalid(M,N,a-1,b) and grid[a-1][b]!=3 and grid[a-1][b]!=0){
-                    q.push({a-1,b});
+                if(j-1>=0 and grid[i][j-1]==1){
+                    grid[i][j-1] = 2;
+                    if(!visited[i][j-1]){
+                        q.push({i,j-1});
+                    }
                 }
-                if(isvalid(M,N,a,b-1) and grid[a][b-1]!=3 and grid[a][b-1]!=0){
-                    q.push({a,b-1});
-                }
+
             }
-           if(converted_count==fresh_oranges_count){
-               return time;
-           }
-           time++;
+
+             counter++;
+               
         }
         return -1;
+
     }
 };
