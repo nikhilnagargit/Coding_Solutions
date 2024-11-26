@@ -1,25 +1,31 @@
 class Solution {
 public:
     int findChampion(int n, vector<vector<int>>& edges) {
-        vector<bool> visited(n,false);
-        for(int i=0;i<edges.size();i++){
-            int first = edges[i][0];
-            int second = edges[i][1];
-            
-                visited[second]=true;
-       
-        }
-        int count=0;
-        int root =0;
-        for( int i=0;i<n;i++){
-            if(!visited[i])
-            {    count++;
-              root=i;
-            }
+
+        if(edges.size()==0){
+            if(n<=1) return 0;
+            return -1;
         }
         
-        if(count>1)
+        vector<int> starters;
+        unordered_set<int> aane_wale;
+        unordered_set<int> jaane_wale;
+        for(auto edge:edges){
+            jaane_wale.insert(edge[0]);
+            aane_wale.insert(edge[1]);
+        }
+        for(auto i:jaane_wale){
+            if(aane_wale.count(i)==0){
+                starters.push_back(i);
+            }
+        }
+        jaane_wale.insert(aane_wale.begin(),aane_wale.end());
+        if(jaane_wale.size()!=n){
             return -1;
-        return root;
+        }
+        if(starters.size()!=1){
+            return -1;
+        }
+        return starters[0];
     }
 };
