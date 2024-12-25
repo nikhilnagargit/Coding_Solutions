@@ -11,25 +11,26 @@
  */
 class Solution {
 public:
-    int traverse(TreeNode* root,int level,vector<int>& max_arr){
-        if(root==nullptr){
-            return level;
-        }
-        if(root->val>max_arr[level]){
-            max_arr[level] = root->val;
-        }
-        return max(traverse(root->left,level+1,max_arr),traverse(root->right,level+1,max_arr));
-    }
-
-        
     vector<int> largestValues(TreeNode* root) {
-        vector<int> max_arr(10001,INT_MIN);
-        if(!root) return vector<int>{};
-
-        int lvl = traverse(root,0,max_arr);
-        vector<int>ans;
-        for(int i=0;i<lvl;i++){
-                ans.push_back(max_arr[i]);
+        vector<int> ans;
+        queue<TreeNode*> q;
+        if(!root)return ans;
+        q.push(root);
+        // ans.push_back(root->val);
+        while(!q.empty()){
+            int s = q.size();
+            int largest = INT_MIN;
+            for(int i=0;i<s;i++){
+                TreeNode* curr = q.front();q.pop();
+                largest = max(largest,curr->val);
+                if(curr->left){
+                    q.push(curr->left);
+                }
+                if(curr->right){
+                    q.push(curr->right);
+                }
+            }
+            ans.push_back(largest);
         }
         return ans;
     }
