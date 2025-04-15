@@ -1,18 +1,12 @@
 class Solution {
 public:
-    int maxProfit(vector<int>& arr) {
-        int mini =0 ;
-        int max_diff = 0;
-        for(int i=1;i<arr.size();i++){
-            if(arr[i]<arr[mini]){
-                mini = i;
-            }
-            else{
-                if(max_diff<arr[i]-arr[mini]){
-                    max_diff = arr[i]-arr[mini];
-                }
-            }
+    int maxProfit(vector<int>& prices) {
+        int maxProfit = 0;
+        int minValue = prices[0];
+        for(auto& i:prices){
+            minValue = min(minValue,i);
+            maxProfit = max(maxProfit,i-minValue);
         }
-        return max_diff;
+        return maxProfit;
     }
 };
