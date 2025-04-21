@@ -1,16 +1,20 @@
 class Solution {
 public:
     int maxProfit(vector<int>& prices) {
-        int prev = prices[0];
-        int curr;
-        int max_profit = 0;
+        int localProfit = 0;
+        int globalProfit = 0;
+
         for(int i=1;i<prices.size();i++){
-            curr = prices[i];
-            if(curr>prev){
-                max_profit += curr-prev;
+            if(prices[i-1]>prices[i]){
+                globalProfit += localProfit;
+                localProfit = 0;
             }
-            prev = curr;
+            else{
+                localProfit += prices[i]-prices[i-1];
+            }
         }
-        return max_profit;
+        globalProfit += localProfit;
+
+        return globalProfit;
     }
 };
