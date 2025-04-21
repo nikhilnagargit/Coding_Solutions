@@ -2,29 +2,28 @@ class RandomizedSet {
 public:
     unordered_set<int> s;
     RandomizedSet() {
-        
     }
     
     bool insert(int val) {
-        if(s.find(val)==s.end()){
-            s.insert(val);
+        if(s.count(val)){
+            return false;
+        }
+        s.insert(val);
+        return true;
+    }
+    
+    bool remove(int val) {
+        if(s.count(val)){
+            s.erase(val);
             return true;
         }
         return false;
     }
     
-    bool remove(int val) {
-        if(s.find(val)==s.end()){
-            return false;
-        }
-        s.erase(val);
-        return true;
-    }
-    
     int getRandom() {
-        unordered_set<int>::iterator it = s.begin();
-        int n  = rand()%(s.size());
-        advance(it, n);
+     unordered_set<int>::iterator it = s.begin();
+  
+        advance(it,rand()%(s.size()));
         int x = *it;
         return x;
     }
