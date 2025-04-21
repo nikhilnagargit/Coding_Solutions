@@ -1,29 +1,19 @@
 class Solution {
 public:
     int hIndex(vector<int>& citations) {
-
-        sort(citations.begin(),citations.end(),greater<int>());
-        
- 
-        int left = 0;
-        int right = citations.size()-1;
-
-        while(left<right){
-            int mid = left+(right-left)/2;
-            if(citations[mid]==mid+1){
-                return mid+1;
-            }
-            else if(citations[mid]<mid+1){
-                right = mid-1;
+        sort(citations.begin(),citations.end());
+        int prev = 0;
+        for(int h=citations.size()-1;h>=0;h--){
+            int c = citations[h];
+            int n = citations.size()-h;
+            if (c>=n){
+               prev = n;
             }
             else{
-                left = mid+1;
+                break;
             }
-        }
 
-        if(citations[left]>=left+1) return left+1;
-
-        return left;
         }
-        
+        return prev;
+    }
 };
