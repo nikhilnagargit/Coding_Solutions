@@ -1,44 +1,47 @@
 class Solution {
 public:
     string convert(string s, int numRows) {
-        if(numRows==1){
-            return s;
-        }
-        int length = s.size();
-        // make a matrix
-        int rows = numRows+1;
-        int columns = 500;
-        vector<vector<char>> matrix(rows, vector<char> (columns, '0'));
-        // start filling matrix;
-        int k=0;
-        int i=-1;
-        int j=0;
-        while(k<length){
-            // go down
-            while(k<length and i<numRows-1){
-                i++;
-                 matrix[i][j] = s[k];
-     
-                k++;
+        vector<vector<char>>v(numRows,vector<char>(1000,' ')) ;
+
+        int index = 0;
+        int n = 0;
+        int m = 0;
+        while(index<s.size()){
+            for(int i=0;i<numRows;i++){
+                if(index<s.size()){
+                     
+                //   cout<<n<<","<<m<<","<<index<<endl;
+              
+                    v[n][m] = s[index];
+                    n = n+1;
+                    index++;
+                }
             }
-            // go diagonally up
-            while(k<length and i>0){
-                i--;
-                j++;
-         
-                matrix[i][j] = s[k];
-                k++;
+            n = numRows-1;
+            // cout<<"--------"<<endl;
+            for(int i=1;i<numRows-1;i++){
+                if(index<s.size()){
+                    n = n-1;
+                    m = m+1;
+            //    cout<<n<<","<<m<<","<<index<<endl;
+                    v[n][m] = s[index];
+                    index++;
+                }
             }
+            n = 0;
+            m = m+1;
         }
-        // traverse the matrix and make new string
-        string new_s = "";
-        for(int i=0;i<rows;i++){
-            for(int j=0;j<columns;j++){
-                if(matrix[i][j]!='0'){
-                    new_s+=matrix[i][j];
+
+        string ans= "";
+        
+        for(int i=0;i<numRows;i++){
+            for(int j=0;j<1000;j++){
+                if(v[i][j]!=' '){
+                    ans+= v[i][j];
                 }
             }
         }
-        return new_s;
+        return ans;
     }
 };
+
