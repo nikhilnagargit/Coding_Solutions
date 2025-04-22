@@ -1,42 +1,31 @@
 class Solution {
 public:
-    void reverse(string& s,int left,int right){
-        while(left<right){
-            swap(s[left],s[right]);
-            left++;
-            right--;
-        } 
-    }
-
     string reverseWords(string s) {
-        //remove the extra space.
-        int size=0;
+        vector<string> words;
+        string word  = "";
         int i=0;
-        int left=0;
-        int right=0;
-        while(i<s.size()){
-            while(i<s.size() and s[i]==' '){
-                i++;
+        for(int i=0;i<s.size();i++){
+            if(s[i]==' '){
+                if(word!=""){
+                words.push_back(word);
+                // cout<<","<<word<<",";
+                }
+                word = "";
             }
-            left = size;
-            while(i<s.size() and s[i]!=' '){
-                s[size]=s[i];
-                size++;
-                i++;
-            }
-            right= size-1;
-            reverse(s,left,right);
-            if(i<s.size()){
-                s[size]=' ';
-                size++;
-                i++;
+            else{
+                word += s[i];
             }
         }
-        if(s[size-1]==' '){
-            size--;
+        if(word!="")
+        words.push_back(word);
+        string ans="";
+        reverse(words.begin(),words.end());
+        for(int i=0;i<words.size();i++){
+            ans+= words[i];
+            if(i!=words.size()-1){
+                ans+=" ";
+            }
         }
-        s.resize(size);
-        reverse(s,0,size-1);
-        return s;
+        return ans;
     }
 };
