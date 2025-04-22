@@ -1,16 +1,22 @@
 class Solution {
 public:
     int lengthOfLastWord(string s) {
+        string lastword = "";
         string currword = "";
-        int i=s.size()-1;
-        int l = 0;
-        while(s[i]==' '){
-            i--;
+        for(int i=0;i<s.size();i++){
+            if(s[i]==' '){
+                if(currword!="" and currword!=" ")
+                lastword = currword;
+                currword = "";
+            }
+            else {
+                currword+= s[i];
+            }
         }
-        while(i>=0 and s[i]!=' '){
-            l++;
-            i--;
-        }
-        return l;
+        if(currword!="" and currword!=" ")
+            lastword = currword;
+
+        // cout<<","<<lastword<<",";
+        return lastword.size();
     }
 };
