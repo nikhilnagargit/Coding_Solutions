@@ -1,33 +1,19 @@
 class Solution {
 public:
     string makeFancyString(string s) {
-        vector<pair<char,int>> arr;
-        int count = 1;
-        char prev = '-';
-        for(char c:s){
-            if(prev!=c){
-                arr.push_back({prev,count});
-                count= 1;
-                prev = c;
-            }
-            else{
-                count++;
-            }
+        if(s.size()<=2){
+            return s;
         }
-        arr.push_back({prev,count});
-        
-        string ans = "";
-        vector<pair<char,int>> brr(arr.begin()+1,arr.end());
-        for(auto p:brr){
-            if(p.second>=2){
-                ans+= p.first;
-                ans+= p.first;
-            }
-            else {
-                ans+= p.first;
-            }
-        }
+        int curr = 2;
+        string ans  = "";
+        ans+= s[0];
+        ans+= s[1];
 
+        for(int i=2;i<s.size();i++){
+            if(s[curr-1]!=s[curr] or s[curr-2]!=s[curr])
+                ans+= s[curr];
+            curr++;
+        }
         return ans;
     }
 };
