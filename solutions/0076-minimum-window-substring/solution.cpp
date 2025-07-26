@@ -1,83 +1,51 @@
 class Solution {
 public:
+    bool compare_maps(unordered_map<char,int>& d_map, unordered_map<char,int>& c_map){
+        for(auto& item:d_map){
+            if(c_map.find(item.first)==c_map.end() or c_map[item.first]<d_map[item.first]){
+                return false;
+            }
+        }
+        return true;
+    }
+// // Function to print an unordered_map<char, int>
+// void printUnorderedMap(const std::unordered_map<char, int>& d_map) {
+//     cout<<"{";
+//     for (const auto& pair : d_map) {
+//         std::cout<<","<< pair.first <<":"<< pair.second;
+//     }
+//     cout<<"}"<<endl;
+// }
     string minWindow(string s, string t) {
-        if(s.size()<t.size()) return "";
-        unordered_map<char,int> tmap ;
-        unordered_map<char,int> wmap;
-        int minw = INT_MAX;
-        int minleft = INT_MAX;
-        int minright = INT_MAX;
-        for(auto c:t){
-            tmap[c]++;
-        }
-        int count_w_ele = 0;
-        int idx=0;
-        while(idx<s.size()){
-            if(tmap.contains(s[idx])){
-                if(wmap[s[idx]]<tmap[s[idx]]){
-                    wmap[s[idx]]++;
-                    count_w_ele++;
-                }
-                else{
-                    wmap[s[idx]]++;
-                }
-                break;
-            }
-            idx++;
-        }
-        int left = idx;
-        idx = left+1;
-        while(idx<s.size() and count_w_ele!=t.size()){
-            if(tmap.contains(s[idx])){
-                if(wmap[s[idx]]<tmap[s[idx]]){
-                    wmap[s[idx]]++;
-                    count_w_ele++;
-                }
-                else{
-                    wmap[s[idx]]++;
-                }
-            }
-            idx++;
-        }
-  
-        int right = idx-1;
-    
+        pair<int,int> smallest = {-1,-1};
+        unordered_map<char,int> d_map;
+        unordered_map<char,int> c_map;
+        for(auto &c:t) d_map[c]++;
+        int left = 0;
+        for(int right=0;right<s.size();right++){
+            // expand the window
+            c_map[s[right]]++;
+            // cout<<s.substr(left,right-left+1)<<","<<compare_maps(d_map,c_map)<<endl;
+            // printUnorderedMap(d_map);
+            // printUnorderedMap(c_map);
+            // cout<<"-----------------";
 
-        minleft = left;
-        minright =right;
-        minw = right-left+1;
-        if(right+1==s.size() and count_w_ele!=t.size()){
-            return "";
-        }
-        while(left<s.size() and right<s.size()){
-                cout<<"left:"<<left<<" right:"<<right<<endl;
-            // decrease the window first
-            if(wmap[s[left]]<=tmap[s[left]]){
-                count_w_ele--;
-            }
-            wmap[s[left]]--;
-            left++;
-            while(left<s.size() and !tmap.contains(s[left]))
-                left++;
-            
-            // increase the window
-            
-            while(right<s.size() and count_w_ele!=t.size()){
-                right++;
-                while(right<s.size() and !tmap.contains(s[right]))
-                    right++;
-                if(wmap[s[right]]+1 == tmap[s[right]]){
-                    count_w_ele++;
+            // check if window is complete/extra elements there
+            while(left<=right and compare_maps(d_map,c_map)){
+                // check for smallest ans and start reducing window.
+                // cout<<temp_s<<", "<<smallest_s<<endl;
+                if((right-left+1)<(smallest.second-smallest.first+1) or (smallest.first==-1 and smallest.second==-1)){
+                    smallest = {left,right};
                 }
-                wmap[s[right]]++;               
-            } 
-            if(count_w_ele==t.size() and minw>(right-left+1)){
-                minw = right-left+1;
-                minright = right;
-                minleft = left;
+                // reduce
+                c_map[s[left]]--;
+                if(c_map[s[left]]==0){
+                    c_map.erase(s[left]);
+                }
+                left++;
             }
         }
-        cout<<count_w_ele;
-        return s.substr(minleft,minright-minleft+1);
+        if(smallest.first==-1 and smallest.second==-1) return "";
+        return s.substr(smallest.first,smallest.second-smallest.first+1);
     }
 };
