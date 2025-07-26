@@ -1,36 +1,26 @@
 class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        intervals.push_back(newInterval);
-        vector<int> starttime;
-        vector<int> endtime;
-        for(auto item:intervals){
-            starttime.push_back(item[0]);
-            endtime.push_back(item[1]);
-        }
-         intervals.clear();
         vector<vector<int>> ans;
-        
-        sort(starttime.begin(),starttime.end());
-        sort(endtime.begin(),endtime.end());
-        
-        int start=0;
-        int i=1;
-        while(i<starttime.size()){
-            if(endtime[i-1]>=starttime[i]){
-                i++;
+        intervals.push_back(newInterval);
+        sort(intervals.begin(),intervals.end());
+
+        vector<int> prev = intervals[0];
+
+        for(int i=1;i<intervals.size();i++){
+
+            vector<int> curr = intervals[i];
+            if(prev[1]>=curr[0]){
+                prev = {prev[0],max(prev[1],curr[1])};
             }
             else{
-                ans.push_back(vector<int>{starttime[start],endtime[i-1]});
-                start=i;
-                i++;
+                ans.push_back(prev);
+                prev = curr;
             }
+
         }
-        ans.push_back(vector<int>{starttime[start],endtime[i-1]});
-        starttime.clear();
-        endtime.clear();
+        ans.push_back(prev);
+
         return ans;
-
-
     }
 };
