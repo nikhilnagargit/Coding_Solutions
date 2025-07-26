@@ -1,57 +1,57 @@
 class Solution {
 public:
-    bool check(vector<char>& v){
-      set<char> s;
-      for(auto item:v){
-        if(s.find(item)!=s.end()){
-            return false;
+    bool isValid(char i){
+        if((i<='9' and i>='1') or i=='.'){
+            return true;
         }
-        s.insert(item);
-      }
-      return true;
+        return false;
     }
 
     bool isValidSudoku(vector<vector<char>>& board) {
-        // check for every row;
-        vector<char> v;
-        for(int i=0;i<9;i++){
-          for(int j=0;j<9;j++){
-              if(board[i][j]!='.')
-                v.push_back(board[i][j]);
-          }
-          if(!check(v))return false;
-          v.clear();
+        int m  = 9;
+        int n  = 9;
+        for(int i=0;i<n;i++){
+            unordered_set<char> rows;
+            unordered_set<char> cols;
+            for(int j=0;j<m;j++){
+                if((!isValid(board[i][j]))or (board[i][j]!='.' and rows.count(board[i][j]))>0){
+                    // cout<<i<<j;
+                    return false;
+                }
+                else{
+                    rows.insert(board[i][j]);
+                }
+                if((!isValid(board[j][i])) or (board[j][i]!='.' and cols.count(board[j][i]))>0){
+                    //   cout<<"2";
+                    return false;
+                }
+                else{
+                    cols.insert(board[j][i]);
+                }
+            }
+            rows.clear();
+            cols.clear();
         }
-        
 
-        // check for every column
-        for(int i=0;i<9;i++){
-          for(int j=0;j<9;j++){
-              if(board[j][i]!='.')
-            v.push_back(board[j][i]);
-          }
-          if(!check(v))
-          return false;
-            v.clear();
-        }
-      
-
-        // check for every 3x3 matrix
-        for(int i=0;i<3;i++){
-            for(int j=0;j<3;j++){
-
-                for(int m=3*i;m<3*i+3;m++){
-                    for(int n=3*j;n<3*j+3;n++){
-                        if(board[m][n]!='.')
-                        v.push_back(board[m][n]);
+        // 3x3 boxes valid
+        for(int a=0;a<3;a++){
+            for(int b=0;b<3;b++){
+                unordered_set<char> s;
+                for(int i=0;i<3;i++){
+                    for(int j=0;j<3;j++){
+                        if((!isValid(board[i+a*3][j+b*3])) or (board[i+a*3][j+b*3]!='.' and s.count(board[i+a*3][j+b*3]))>0){
+                            //   cout<<"3";
+                            return false;
+                        }
+                        else{
+                            s.insert(board[i+a*3][j+b*3]);
+                        }
                     }
                 }
-                if(!check(v))
-                       return false;
-                         v.clear();
             }
         }
+
         return true;
-        
+
     }
 };
