@@ -1,32 +1,33 @@
 class Solution {
 public:
+
     int evalRPN(vector<string>& tokens) {
-        stack<int>stk;
-        for(auto token:tokens){
-            if(token=="*"){
-                int b = stk.top();stk.pop();
-                int a = stk.top();stk.pop();
-                stk.push(a*b);
+        stack<int> st;
+        for(auto& t:tokens){
+            if(t=="/"){
+            int a = st.top();st.pop();
+            int b = st.top();st.pop();
+                st.push(b/a);
             }
-            else if(token=="/"){
-                int b = stk.top();stk.pop();
-                int a = stk.top();stk.pop();
-                stk.push(a/b);
+            else if(t=="*"){
+                            int a = st.top();st.pop();
+            int b = st.top();st.pop();
+                st.push(a*b);
             }
-            else if(token=="+"){
-                int b = stk.top();stk.pop();
-                int a = stk.top();stk.pop();
-                stk.push(a+b);
+            else if(t=="+"){
+                            int a = st.top();st.pop();
+            int b = st.top();st.pop();
+                st.push(a+b);
             }
-            else if(token=="-"){
-                int b = stk.top();stk.pop();
-                int a = stk.top();stk.pop();
-                stk.push(a-b);
+            else if(t=="-"){
+                            int a = st.top();st.pop();
+            int b = st.top();st.pop();
+                st.push(b-a);
             }
-            else{
-                stk.push(stoi(token));
+            else {
+                st.push(stoi(t));
             }
         }
-        return stk.top();
+        return st.top();
     }
 };
