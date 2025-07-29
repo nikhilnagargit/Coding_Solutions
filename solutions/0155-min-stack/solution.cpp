@@ -1,43 +1,32 @@
 class MinStack {
 public:
-    vector<int> container;
-    int size=0;
-    vector<int> minimum;
-    int min_size=0;
+    vector<pair<long,long>> stack;
     MinStack() {
-        container = vector<int>(30002,INT_MAX);
-        minimum = vector<int>(300002,INT_MAX);
+        
     }
-    
     void push(int val) {
-        container[size]=val;
-        size++;
-        if(min_size==0){
-            minimum[0] = val;
-            min_size++;
+
+         if(stack.size()==0 or val< stack[stack.size()-1].second){
+            stack.push_back({val,val});
         }
-        else if(val<=minimum[min_size-1]){
-            minimum[min_size] = val;
-            min_size++;
+        else{
+            stack.push_back({val,stack[stack.size()-1].second});
         }
+
     }
     
     void pop() {
-        if(size>0){
-            if(container[size-1]==minimum[min_size-1]){
-                minimum[min_size-1]=INT_MAX;
-                min_size--;
-            }
-            size--;
+        if(stack.size()>=1){
+            stack.pop_back();
         }
     }
     
     int top() {
-        return container[size-1];
+        return stack[stack.size()-1].first;
     }
     
     int getMin() {
-        return minimum[min_size-1];
+        return stack[stack.size()-1].second;
     }
 };
 
