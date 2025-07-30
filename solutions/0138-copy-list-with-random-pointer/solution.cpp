@@ -16,49 +16,51 @@ public:
 
 class Solution {
 public:
-    Node* findNode(Node* head,int index){
-        while(index--){
-            head = head->next;
-        }
-        return head;
-    }
-
     Node* copyRandomList(Node* head) {
-        if(head==NULL){
-            return nullptr;
+        Node* head2_parent = new Node(0);
+        Node* h2 = head2_parent;
+        Node* h1 = head;
+        // map address to idx and store
+        unordered_map<Node*,int> old_add_idx;
+        int i=1;
+        while(h1){
+            old_add_idx[h1] = i;
+            h1 = h1->next;
+            i++;
         }
-        Node* head_bkp = head;
+        //reset h1
+        h1 = head;
 
-        Node* head2 = new Node(head->val);
-        Node* head2_bkp = head2;
 
-        // make a copy
-        Node* a = head;
-        int index = 0;
-        while(a->next!=NULL){
-            a->val = index++;
-            a = a->next;
-            head2->next = new Node(a->val);
-            head2 = head2->next;
+        //create new ll and map index of random also
+        unordered_map<int,int> mp_idx_idx;
+        unordered_map<int,Node*> new_idx_add;
+        i=1;
+        while(h1){
+            h2->next = new Node(h1->val);
+            new_idx_add[i] = h2->next;
+            mp_idx_idx[i] = old_add_idx[h1->random];
+            h1 = h1->next;
+            h2 = h2->next;
+            i++;
         }
-        a->val = index;
-        head2->next = nullptr;
+        
+        //reset h1 and h2
+        h2 = head2_parent;
+        h1 = head;
 
-        head2 = head2_bkp;
-        int random_index;
-        // for every random index, find node and assign
-        while(head!=nullptr){
-            if(head->random==nullptr){
-                head->random = nullptr;
-     
-            }
-            else{
 
-            head2->random = findNode(head2_bkp,head->random->val);
-            }
-            head = head->next;
-            head2 = head2->next;
+
+        // map address to idx for new ll
+        h2= h2->next;
+        i=1;
+        while(h2){
+            h2->random = new_idx_add[mp_idx_idx[i]];
+            i++;
+            h2 = h2->next;
         }
-        return head2_bkp;
+
+
+        return head2_parent->next;
     }
 };
