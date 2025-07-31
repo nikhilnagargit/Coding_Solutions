@@ -10,57 +10,49 @@
  */
 class Solution {
 public:
-// reverse function which will return the head of reversed linked list
-    ListNode* reverse(ListNode* root){
-        if(!root or root->next==nullptr){
-            return root;
+    ListNode* reverseLL(ListNode* head){
+        if(!head or !head->next){
+            return head;
         }
-        ListNode* first = root;
-        ListNode* second = root->next;
-        ListNode* third = root->next->next;
-        first->next = nullptr;
-        while(third!=nullptr){
-            second->next = first;
-            first = second;
-            second = third;
-            third = third->next;
-        }
-        second->next = first;
-        return second;
-    }
-// find end function, it will return null if end is lesser than k otherwise it will return kth node
-    ListNode* findnextKth(ListNode* root,int k){
-        if(root==nullptr)return root;
-        ListNode* first = root;
-        int counter = 0;
-        while(counter<k-1 and first->next!=nullptr){
-            first = first->next;
-            counter++;
-        }
-        if(counter!=k-1)
-        return nullptr;
-        return first;
-    }
+        ListNode* prev = head;
+        ListNode* curr = head->next;
+        ListNode* nxt = head->next->next;
 
-    ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* start = head;
-        ListNode* end = findnextKth(start,k);
-        head = end;
-        ListNode* end_backup = nullptr;
-        while(end!=nullptr){ 
-            ListNode* nextStart = end->next;
-            end->next = nullptr;
-            end = start;
-            start = reverse(start);
-            if(end_backup!=nullptr){
-            end_backup->next = start;
-            }
-            end_backup = end;
-            start = nextStart;
-            end = findnextKth(start,k);
-            }
-        if(end_backup!=nullptr)   
-        end_backup->next = start;
-        return head;
+        head->next = nullptr;
+        while(nxt){
+            curr->next = prev;
+            prev = curr;
+            curr = nxt;
+            nxt = nxt->next;
         }
+        curr->next = prev;
+        return curr;
+    }
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        ListNode* prev = dummy;
+        ListNode* curr = head;
+        while(curr){
+            int i=0;
+            ListNode* end = curr;
+            while(end and i<k-1){
+                end = end->next;
+                i++;
+            }
+            if(end){
+            ListNode* temp = end->next;
+            end->next = nullptr;
+            ListNode* r = reverseLL(curr);
+            prev->next =r;
+            curr->next =temp;
+            prev = curr;
+            curr = temp;
+            }
+            else{
+                curr = nullptr;
+            }
+        }
+        return dummy->next;
+    }
 };
