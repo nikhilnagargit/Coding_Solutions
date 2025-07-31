@@ -1,24 +1,44 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
 class Solution {
-  public: ListNode * deleteDuplicates(ListNode * head) {
-    ListNode * dummy = new ListNode(0, head);
-    ListNode * prev = dummy;
+public:
+    ListNode* deleteDuplicates(ListNode* head) {
+        if(!head or !head->next) return head;
+        ListNode* dummy = new ListNode(-10000);
+        dummy->next = head;
+        ListNode* ans = head;
+        ListNode* prev = dummy;
+        ListNode* curr = head;
+        ListNode* nxt = head->next;
 
-    while(head!=nullptr){
-
-        if(head->next!=nullptr and head->next->val==head->val){
-            while(head and head->next!=nullptr and head->next->val==head->val){
-                head = head->next;
+        while(nxt){
+            if(curr->val==nxt->val){
+                // start looping and find end
+                ListNode* end = nxt;
+                while(end!=nullptr and curr->val==end->val){
+                    end = end->next;
+                }
+                prev->next = end;
+                curr = end;
+                if(end!=nullptr)
+                nxt = end->next;
+                else
+                nxt = nullptr;
             }
-            prev->next = head->next;
+            else{
+                prev = curr;
+                curr = nxt;
+                nxt = nxt->next;
+            }
         }
-        else{
-            prev = prev->next;
-        }
-        head  = head->next;
-
+        return dummy->next;
     }
-
-
-    return dummy -> next;
-  }
 };
