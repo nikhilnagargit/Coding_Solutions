@@ -1,89 +1,88 @@
-class LRUCache {
-    class Node{
-        public:
-            int key;
-            int val;
-            Node* next;
-            Node* prev;
-        Node(int key,int val){
-            this->key = key;
-            this->val = val;
-            next = nullptr;
-            prev = nullptr;
-        }
-    };
 
+class Node{
+    public:
+    Node* next;
+    Node* prev;
+    int val;
+    int key;
+    Node(){
+        key = 0;
+        val = 0;
+        next = nullptr;
+        prev = nullptr;
+    }
+    Node(int k,int v){
+        key = k;
+        val = v;
+        next = nullptr;
+        prev = nullptr;
+    }
+};
+
+
+class LRUCache {
 public:
-    int capacity;
-    unordered_map<int,Node*>m;
-    Node* dummy_head;
-    Node* dummy_tail;
-    LRUCache(int c) {
-        capacity = c;
-        dummy_head = new Node(-1,-1);
-        dummy_tail = new Node(-1,-1);
-        dummy_head->next = dummy_tail;
-        dummy_tail->prev = dummy_head;    
-    }
-    
-    void deletenode(Node* curr){
-        Node* prevnode = curr->prev;
-        Node* nextnode = curr->next;
-        prevnode->next = nextnode;
-        nextnode->prev = prevnode;
-    }
-    Node* createandinsertnode(int key,int val){
-        Node* newnode = new Node(key,val);
-        Node* temp1 = dummy_head->next;
-        dummy_head->next = newnode;
-        newnode->prev = dummy_head;
-        newnode->next = temp1;
-        temp1->prev = newnode;
-        return newnode;
+    unordered_map<int,Node*> m;
+    Node* head;
+    Node* tail;
+    int limit;
+
+    LRUCache(int capacity) {
+        limit = capacity;
+        head = new Node(-1,-1);
+        tail = new Node(-1,-1);
+        head->next = tail;
+        tail->prev = head;
     }
 
     int get(int key) {
-        // check if exist in map
-        if(m.find(key)==m.end()){
-            return -1;
+        if(m.find(key)!=m.end()){
+            Node* curr = m[key];
+            removeNode(curr);
+            insertNodeAtHead(curr);
+            m[key] = curr;
+            return m[key]->val;
         }
-        // delete from list and map, and create new entery then return value
-        int ans = m[key]->val;
-        deletenode(m[key]);
-        m.erase(key);
-        m[key] = createandinsertnode(key,ans);
-        return ans;
+        return -1;
+    }
+
+    void insertNodeAtHead(Node* new_node){
+        Node* nxt = head->next;
+        head->next = new_node;
+        new_node->prev = head;
+        new_node->next = nxt;
+        nxt->prev = new_node;
+    }
+
+    void removeNode(Node* node){
+        Node* prev = node->prev;
+        Node* nxt = node->next;
+        node->next = nullptr;
+        node->prev = nullptr;
+        prev->next = nxt;
+        nxt->prev = prev;
     }
     
     void put(int key, int value) {
-        if(m.size()==capacity){
-            if(m.find(key)==m.end()){
-                // delete lru 
-                int key_to_delete = dummy_tail->prev->key;
-                deletenode(dummy_tail->prev);
-                // delete from map
-                m.erase(key_to_delete);
-                m[key] = createandinsertnode(key,value);
-            }
-            else{
-                // delete the exisitng
-                deletenode(m[key]);
-                m.erase(key);
-                // add new
-                m[key] = createandinsertnode(key,value);
-            }
+        Node* new_node = new Node(key,value);
+        if(m.find(key)!=m.end()){
+            removeNode(m[key]);
         }
-        else{
-            if(m.find(key)==m.end()){
-                m[key] = createandinsertnode(key,value);
-            }
-            else{
-                  // delete the exisitng
-                deletenode(m[key]);
-                m.erase(key);
-                // add new
-                m[key] = createandinsertnode(key,value);
-            }
+        m[key] = new_node;
+        insertNodeAtHead(new_node);
+        if(m.size()>limit){
+            // remove oldest means tail of the ll
+            m.erase(tail->prev->key);
+            removeNode(tail->prev);
         }
+
     }
+
 };
+
+/**
+ * Your LRUCache object will be instantiated and called as such:
+ * LRUCache* obj = new LRUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
