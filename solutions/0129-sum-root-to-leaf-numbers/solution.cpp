@@ -10,23 +10,19 @@
  * };
  */
 class Solution {
-public:
-    void path(TreeNode* root, int& sum, int& num) {
-        if (!root) 
-            return;
-        if (!root->left && !root->right) {
-            sum += num * 10 + root->val;
-            return;
+public: 
+    int solve(TreeNode* root,int num){
+        if(!root){
+            return 0;
         }
-        num = num * 10 + root->val;
-        path(root->left, sum, num);
-        path(root->right, sum, num);
-        num = num / 10;
-    }
 
+        int newnum = num*10 + root->val;
+        if(!root->left and !root->right){
+            return newnum;
+        }
+        return solve(root->left,newnum) + solve(root->right,newnum);
+    }
     int sumNumbers(TreeNode* root) {
-        int sum = 0, num = 0;
-        path(root, sum, num);
-        return sum;
+        return solve(root,0);
     }
 };
