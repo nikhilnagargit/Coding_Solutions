@@ -18,42 +18,43 @@ public:
 
 class Solution {
 public:
-    Node* connect(Node* root) {
-        Node* marker = nullptr;
-        queue<Node*> q;
-        q.push(root);
-        q.push(marker);
-        Node* curr = q.front();
-         q.pop();
-
-        while(!q.empty()){
-
-            if(curr==marker){
-                q.push(marker);
+    // will accept parent node as argument
+    Node* find_next(Node* cur){
+       while(cur){
+            if(cur->left){
+                
+                return cur->left;
             }
-            else{
-                if(curr->left)
-                q.push(curr->left);
-                if(curr->right)
-                q.push(curr->right);
+             else if(cur->right){
+                return cur->right;
             }
-            Node* curr2 = q.front();
-            q.pop();
-            if(curr==marker and curr2==marker){
-                break;
-            }
-            if(curr2==marker){
-                curr->next = nullptr;
-                q.push(marker);
-                curr = q.front();
-                q.pop();
-            }
-            else{
-                curr->next = curr2;
-                curr = curr2;
-            }
-            
+            cur=cur->next;
         }
+        return NULL;
+    }
+
+
+    Node* connect(Node* root) {
+        if(!root) return root;
+        if(root->left){
+            if(root->right)
+                root->left->next = root->right;
+            else
+            {
+                Node* cur = root->next;
+                root->left->next = find_next(cur);
+            }
+        }
+        if(root->next){
+            if(root->right){    
+                Node* cur = root->next;
+                 root->right->next = find_next(cur);       
+            }
+        }
+        connect(root->right);
+        connect(root->left);
         return root;
     }
+
+
 };
