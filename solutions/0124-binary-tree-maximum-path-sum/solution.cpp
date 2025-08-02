@@ -11,42 +11,31 @@
  */
 class Solution {
 public:
-    int max_sum;
-    void solve(TreeNode* root){
-        if(!root)return;
-        solve(root->left);
-        solve(root->right);
-        // if any child is negative , do not include it
-        int result = root->val;
-        if(root->left and root->left->val>0){
-            result+=root->left->val;
-        }
-        if(root->right and root->right->val>0){
-            result+=root->right->val;
-        }
-        // check for maxsum achieved
-        max_sum = max(max_sum,result);
+    int maxi ;
+    int solve(TreeNode* root){
+        if(!root) return -100001;
 
-        // replace the current value with the possible max sum , if parent node is in the path
-        if(root->left and root->right){
-             if(root->left->val>root->right->val){
-                 root->val = max(root->val,root->val+root->left->val);
-             }
-             else{
-                 root->val = max(root->val,root->val+root->right->val);
-             }
+        int left = -100001;
+        if(root->left){
+            left = solve(root->left);
         }
-        else if(root->left){
-            root->val = max(root->val,root->val+root->left->val);
+        int right = -100001;
+        if(root->right){
+            right = solve(root->right);
         }
-        else if(root->right){
-            root->val = max(root->val,root->val+root->right->val);
+        if(left<0){
+            left = 0;
         }
-
+        if(right<0){
+            right =0;
+        }
+        maxi = max(maxi,left+right+root->val);
+        return max(left+root->val,right+root->val);
     }
+
     int maxPathSum(TreeNode* root) {
-        max_sum = INT_MIN;
-        solve(root);
-        return max_sum;
+        maxi = -100001;
+        int m = solve(root);
+        return maxi;
     }
 };
