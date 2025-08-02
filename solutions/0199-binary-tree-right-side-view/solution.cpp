@@ -11,25 +11,20 @@
  */
 class Solution {
 public:
-    vector<int> rightSideView(TreeNode* root) {
-        deque<TreeNode*> q;
-        q.push_front(root);
-        vector<int>ans;
-        if(!root)return ans;
-        while(!q.empty()){
-            ans.push_back(q.back()->val);
-            int n= q.size();
-            for(int i=0;i<n;i++){
-                TreeNode* curr = q.front();q.pop_front();
-                if(curr->left){
-                    q.push_back(curr->left);
-                }
-                if(curr->right){
-                    q.push_back(curr->right);
-                }
-            }
+    vector<int> v;
+    
+    void solve(TreeNode* root,int level){
+        if(!root) return;
+        if(v.size()<=level)
+            v.push_back(root->val);
+        else{
+            v[level] = root->val;
         }
-        
-        return ans;
+        solve(root->left,level+1);
+        solve(root->right,level+1);
+    }
+    vector<int> rightSideView(TreeNode* root) {
+        solve(root,0);
+        return v;
     }
 };
