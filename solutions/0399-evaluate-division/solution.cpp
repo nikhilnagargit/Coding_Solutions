@@ -1,41 +1,42 @@
 class Solution {
 public:
-    unordered_map<string,vector<pair<string,double>>> m;
-    double dfs(string source,string target,unordered_set<string>& visited,double ans){
-        if(source==target){
-            return ans;
+    void dfs(unordered_map<string,vector<pair<string,double>>>&mp,string curr,double costtillnow,string target,unordered_set<string>&visited,double& cost){
+        if(curr==target){
+            cost = costtillnow;
+            return ;
         }
-        for(auto neighborpair:m[source]){
-            if(visited.find(neighborpair.first)==visited.end()){
-                visited.insert(neighborpair.first);
-                double a = dfs(neighborpair.first,target,visited,ans*neighborpair.second);
-                if(a!=-1){
-                    return a; 
-                };
-            }
+        if(visited.count(curr)){
+            return;
         }
-        return -1;
-    }
-
-    double solve(vector<string>& v){
-        string source = v[0];
-        string target = v[1];
-        if(m.find(source)==m.end()){
-            return -1;
+        visited.insert(curr);
+        for(auto& neighbor:mp[curr]){
+            dfs(mp,neighbor.first,costtillnow*neighbor.second,target,visited,cost);
         }
-        unordered_set<string> visited;
-        return dfs(source,target,visited,1);
-
     }
     vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
-        for(int i=0;i<values.size();i++){
-            m[equations[i][0]].push_back({equations[i][1],values[i]});
-            m[equations[i][1]].push_back({equations[i][0],1/values[i]});
+        unordered_map<string,vector<pair<string,double>>>mp;
+
+        for(int i=0;i<equations.size();i++){
+            vector<string>  e = equations[i];
+            mp[e[0]].push_back({e[1],values[i]});
+            mp[e[1]].push_back({e[0],1.0/values[i]});
         }
-        vector<double>ans;
-        for(auto query:queries){
-            ans.push_back(solve(query));
+
+        vector<double> ans;
+
+        for(auto& q:queries){
+            string start = q[0];
+            string end = q[1];
+            if(mp.find(start)==mp.end()){
+                ans.push_back(-1.0);
+                continue;
+            }
+            unordered_set<string> visited;
+            double cost =-1.0;
+            dfs(mp,start,1.0,end,visited,cost);
+            ans.push_back(cost);
         }
         return ans;
+
     }
 };
