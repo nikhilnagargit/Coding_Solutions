@@ -1,29 +1,36 @@
 class Solution {
 public:
-    unordered_map<int,vector<int>> neighbors;
-    unordered_set<int>visited;
-
-    bool dfs(int source){
-        if(visited.find(source)!=visited.end()) return true;
-        visited.insert(source);
-        if(neighbors.find(source)==neighbors.end()){
-            visited.erase(source);
+    unordered_map<int,vector<int>>m;
+    unordered_set<int> path_visited;
+    bool dfs(int curr, unordered_set<int>& visited){
+        if(m.find(curr)==m.end()){
+            return true;
+        }
+        if(visited.count(curr)){
             return false;
         }
-        for(auto neighbor:neighbors[source]){
-            if(dfs(neighbor))return true;
+
+        visited.insert(curr);
+        for(auto& n:m[curr]){
+            if(!dfs(n,visited)){
+                return false;
+            }
         }
-        visited.erase(source);
-        neighbors.erase(source);
-        return false;
+        visited.erase(curr);
+        m[curr]=vector<int>();
+        return true;
     }
 
-    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {        
-        for(auto prerequisite: prerequisites){
-            neighbors[prerequisite[0]].push_back(prerequisite[1]);
+    bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+        for(auto& p:prerequisites){
+            m[p[0]].push_back(p[1]);
         }
-        for(int i=0;i<numCourses;i++){
-            if(dfs(i)) return false;
+        unordered_set<int> visited;
+        // for each node , check if you can cycle
+        for(int item = 0 ;item<numCourses;item++){
+            if(!dfs(item,visited)){
+                return false;
+            }
         }
         return true;
     }
