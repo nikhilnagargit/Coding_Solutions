@@ -20,27 +20,22 @@ public:
 */
 
 class Solution {
+    unordered_map<int,Node*> mp;
 public:
-    void dfs(Node* node,Node* copynode,unordered_map<int,Node*>&m){
-        for(auto neighbor:node->neighbors){
-            Node* copyneighbor;
-            if(m.find(neighbor->val)==m.end()){
-                copyneighbor = new Node(neighbor->val);
-                m[neighbor->val] = copyneighbor;
-                dfs(neighbor,copyneighbor,m);
+    Node* visit(Node* node){
+        if(!node) return node;
+        if(mp.find(node->val)==mp.end()){
+            // create new node 
+            Node* new_node= new Node(node->val);
+            mp[node->val]=new_node;
+            for(auto& neighbor:node->neighbors){
+                new_node->neighbors.push_back(visit(neighbor));
             }
-            else{
-                copyneighbor = m[neighbor->val];
-            }
-            copynode->neighbors.push_back(copyneighbor);
         }
+        return mp[node->val];
     }
+
     Node* cloneGraph(Node* node) {
-        if(!node)return node;
-        unordered_map<int,Node*> m;
-        Node* copynode = new Node(node->val);
-        m[node->val] = copynode;
-        dfs(node,copynode,m);
-        return copynode;
+        return visit(node);
     }
 };
