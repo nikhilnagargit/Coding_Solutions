@@ -1,57 +1,55 @@
+class TrieNode{
+    public:
+    unordered_map<char,TrieNode*> m;
+    bool end;
+    TrieNode(){
+        end = false;
+    }
+};
+
+
 class WordDictionary {
 public:
-    class Node{
-        public:
-        bool isEnd;
-        vector<Node*>children;
-        Node(){
-            isEnd = false;
-            children = vector<Node*>(26,nullptr);
-        }
-    };
-    Node* root;
+    TrieNode* root;
     WordDictionary() {
-        root = new Node();
-    }
-
-    void addWord(string word) {
-        Node* curr = root;
-        for(int i=0;i<word.size();i++){
-            if(!curr->children[word[i]-'a']){
-                curr->children[word[i]-'a'] = new Node();
-            }
-            curr = curr->children[word[i]-'a'];
-        }    
-        curr->isEnd = true;
+        root = new TrieNode();
     }
     
-    bool solve(string word,Node* curr){
-        if(curr==nullptr) return false;
-        if(word=="" and curr->isEnd)return true;
-
-        for(int i=0;i<word.size();i++){
-            char c = word[i];
-            if(c=='.'){
-                for(int j=0;j<26;j++){
-                    if(curr->children[j]&&solve(word.substr(i+1),curr->children[j]))
-                        return true;
-                }
-                return false;
+    void addWord(string word) {
+        TrieNode* curr= root;
+        for(char& c:word){
+            if(curr->m.count(c)==0){
+                curr->m[c]=new TrieNode();
+            }
+            curr = curr->m[c];
+        }
+        curr->end = true;
+    }
+    bool traverse(TrieNode* root,string word,int idx){
+        if(word.size()==idx and root->end){
+            return true;
+        }
+        if(word.size()==idx)
+            return false;
+        char c = word[idx];
+        if(c=='.'){
+            for(auto& item:root->m){
+                if(traverse(item.second,word,idx+1)) return true;
+            }
+        }
+        else{
+            if(root->m.count(c)){
+                if(traverse(root->m[c],word,idx+1)) return true;
             }
             else{
-                if(curr->children[c-'a']==nullptr){
-                    return false;
-                }
-                curr = curr->children[c-'a'];
+                return false;
             }
-          }
-          if(curr->isEnd==true)return true;
-          return false;
+        }
+        return false;
     }
 
     bool search(string word) {
-        Node* curr = root;
-        return solve(word,root);
+        return traverse(root,word,0);
     }
 };
 
