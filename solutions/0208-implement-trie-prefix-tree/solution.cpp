@@ -1,57 +1,55 @@
+class TrieNode{
+    public:
+    bool end;
+    vector<TrieNode*> v;
+    TrieNode(){
+        end=false;
+        v = vector<TrieNode*>(26,nullptr);
+    }
+};
 
 class Trie {
 public:
-    class Node{
-        public:
-            bool isEnd;
-            vector<Node*> children;
-            Node(){
-                isEnd = false;
-                children = vector<Node*>(26,nullptr);
-            }
-    };
-
-    Node* root;
+    TrieNode* root;
 
     Trie() {
-        root = new Node();
+        root = new TrieNode();
     }
     
     void insert(string word) {
-        Node* curr = root;
-        for(auto c:word){
-            if(curr->children[c-'a']==nullptr){
-                curr->children[c-'a'] = new Node();
-            }
-            curr = curr->children[c-'a'];
+        TrieNode* curr = root;
+        for(auto& c:word){
+           if(curr->v[c-'a']==nullptr){
+            curr->v[c-'a'] = new TrieNode();
+           }
+           curr = curr->v[c-'a'];
         }
-        curr->isEnd = true;
-        
+        curr->end = true;
     }
     
     bool search(string word) {
-        Node* curr = root;
-        for(auto c:word){
-            if(curr->children[c-'a']==nullptr){
-                return false;
-            }
-            curr = curr->children[c-'a'];
+        TrieNode* curr = root;
+        for(auto& c:word){
+           if(curr->v[c-'a']==nullptr){
+              return false;
+           }
+           curr = curr->v[c-'a'];
         }
-        if(curr->isEnd==false){
+        if(!curr->end){
             return false;
         }
         return true;
     }
     
-    bool startsWith(string word) {
-        Node* curr = root;
-        for(auto c:word){
-            if(curr->children[c-'a']==nullptr){
-                return false;
-            }
-            curr = curr->children[c-'a'];
+    bool startsWith(string prefix) {
+        TrieNode* curr = root;
+        for(auto& c:prefix){
+           if(curr->v[c-'a']==nullptr){
+              return false;
+           }
+           curr = curr->v[c-'a'];
         }
-        return true;   
+        return true;
     }
 };
 
