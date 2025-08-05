@@ -1,65 +1,91 @@
-class Solution {
-public:
-    class Node{
+class TrieNode{
         public:
-        string word;
-        vector<Node*>next;
-        Node(){
-            word = "";
-            next = vector<Node*>(26,nullptr);
+        bool isEnd;
+        vector<TrieNode*> v;
+        TrieNode(){
+            isEnd = false;
+            v = vector<TrieNode*>(26,nullptr);
         }
     };
-    Node* root;
-    void buildTrie(vector<string>& words){
-        for(auto w:words){
-            Node* curr = root;
-            for(auto c:w){
-                if(!curr->next[c-'a']){
-                    curr->next[c-'a'] = new Node();
-                }
-                curr = curr->next[c-'a'];
-            }
-            curr->word = w;
-        }
-    }
-    void dfs(vector<vector<char>>& board,Node* root,vector<string>& ans,int i,int j){
 
-        if(root==nullptr)return;
-        if(i<0 or i>=board.size() or j<0 or j>=board[0].size() or board[i][j]=='#'){
+class Trie{
+    public:
+        TrieNode* root ;
+        Trie(){
+            root = new TrieNode();
+        }
+        bool searchWord(string word){
+        TrieNode* curr = root;
+        for(auto& c:word){
+            if(curr->v[c-'a']==nullptr){
+                return false;
+            }
+            curr = curr->v[c-'a'];
+        }
+        if(!curr->isEnd) return false;
+        return true;
+        }
+
+        bool searchPrefix(string word){
+        TrieNode* curr = root;
+        for(auto& c:word){
+            if(curr->v[c-'a']==nullptr){
+                return false;
+            }
+            curr = curr->v[c-'a'];
+        }
+        return true;
+        }
+
+        void insert(string word){
+            TrieNode* curr = root;
+            for(auto& c:word){
+                if(curr->v[c-'a']==nullptr){
+                    curr->v[c-'a']=new TrieNode();
+                }
+                curr = curr->v[c-'a'];
+            }
+            curr->isEnd = true;
+        }
+
+};
+
+class Solution {
+public:
+    unordered_set<string> ans;
+    void dfs(vector<vector<char>>& board,int i,int j,TrieNode* root,vector<vector<int>>& visited,string word){
+        if(i<0 or i>=board.size() or j<0 or j>=board[0].size()){
             return;
         }
-        Node* curr = root;
-        if(curr->next[board[i][j]-'a']==nullptr){
+        if(visited[i][j]){
             return;
         }
-        char cjar = board[i][j];
-        board[i][j]='#';
-        curr = curr->next[cjar-'a'];
-        if(curr->word !=""){
-            ans.push_back(curr->word);
-            curr->word = "";
+        if(root->v[board[i][j]-'a']==nullptr){
+           return;
         }
-        dfs(board,curr,ans,i+1,j);
-        dfs(board,curr,ans,i,j+1);
-        dfs(board,curr,ans,i-1,j);
-        dfs(board,curr,ans,i,j-1);
-        board[i][j] = cjar;
- 
+        
+        root = root->v[board[i][j]-'a'];
+        visited[i][j]=1;
+        word += board[i][j];
+        if (root->isEnd) ans.insert(word);
+        dfs(board,i+1,j,root,visited,word);
+        dfs(board,i,j+1,root,visited,word);
+        dfs(board,i-1,j,root,visited,word);
+        dfs(board,i,j-1,root,visited,word);
+        visited[i][j]=0;
     }
 
     vector<string> findWords(vector<vector<char>>& board, vector<string>& words) {
-        // root node of trie
-        root = new Node();
-        // build the trie
-        buildTrie(words);
-        // initialize ans
-        vector<string>ans;
-        // dfs the board from all indexes
+        Trie* trie = new Trie();
+        for(auto w:words){
+            trie->insert(w);
+        }
         for(int i=0;i<board.size();i++){
             for(int j=0;j<board[0].size();j++){
-                dfs(board,root,ans,i,j);
+                vector<vector<int>> visited(board.size(),vector<int>(board[0].size(),0));
+                dfs(board,i,j,trie->root,visited,"");
             }
         }
-        return ans;
+        return vector<string>(ans.begin(),ans.end());
     }
 };
