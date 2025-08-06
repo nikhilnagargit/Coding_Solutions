@@ -1,20 +1,26 @@
 class Solution {
 public:
-    void solve(int s,int &n,int k,vector<int> &tmp,vector<vector<int>> &ans){
-        if(k==0){
-            ans.push_back(tmp);
+    vector<vector<int>> ans;
+    
+    void solve(int& n,int i,int& k,vector<int>& v){
+        if(v.size()==k){
+            ans.push_back(v);
             return;
         }
-        for(int i = s; i <= n; i++){
-            tmp.push_back(i);
-            solve(i+1,n,k-1,tmp,ans);
-            tmp.pop_back();
+        if(i>n){
+            return;
         }
+        solve(n,i+1,k,v);
+        
+        v.push_back(i);
+        solve(n,i+1,k,v);
+        v.pop_back();
+ 
     }
     vector<vector<int>> combine(int n, int k) {
-        vector<vector<int>> ans;
-        vector<int> tmp;
-        solve(1,n,k,tmp,ans);
+        vector<int> v;
+        int i=1;
+        solve(n,i,k,v);
         return ans;
     }
 };
