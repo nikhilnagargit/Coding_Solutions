@@ -1,44 +1,26 @@
-					// \U0001f609\U0001f609\U0001f609\U0001f609Please upvote if it helps \U0001f609\U0001f609\U0001f609\U0001f609
 class Solution {
 public:
+    vector<vector<int>> ans;
 
-    void Sum(vector<int>& candidates, int target, vector<vector<int> >& res, vector<int>& r, int i)
-    {
-        
-        if(target == 0)
-        {
-            // if we get exact answer
-            res.push_back(r);
+    void solve(vector<int>&candidates,int& target,int& sum,vector<int>&v,int start){
+        if(sum>target) return;
+        if(sum==target){
+            ans.push_back(v);
             return;
         }
-        
-        while(i <  candidates.size() && target - candidates[i] >= 0)
-        {
-            // Till every element in the array starting
-            // from i which can contribute to the target
-            r.push_back(candidates[i]);// add them to vector
-            
-            // recur for next numbers
-            Sum(candidates,target - candidates[i],res,r,i);
-            ++i;
-            
-            // Remove number from vector (backtracking)
-            r.pop_back();
+        for(int i=start;i<candidates.size();i++){
+            sum+= candidates[i];
+            v.push_back(candidates[i]);
+            solve(candidates,target,sum,v,i);
+            v.pop_back();
+            sum-= candidates[i];
         }
-}
-    
-     
+    }
+
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        sort(candidates.begin(),candidates.end()); // sort candidates array
-        
-        // remove duplicates
-        candidates.erase(unique(candidates.begin(),candidates.end()),candidates.end());
-        
-        vector<int> r;
-        vector<vector<int> > res;
-        
-        Sum(candidates,target,res,r,0);
-        
-        return res;
+        int sum = 0;
+        vector<int>v;
+        solve(candidates,target,sum,v,0);
+        return ans;
     }
 };
