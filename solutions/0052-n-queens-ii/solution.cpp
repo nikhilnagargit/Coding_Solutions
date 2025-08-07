@@ -1,54 +1,38 @@
 class Solution {
 public:
-    int count;
-    bool checkValid(vector<string> &board, int row, int col, int size){
-
-        // check top up
-        for(int i = row-1;i>=0; i--){
-            if(board[i][col] == 'Q'){
-                return false;
-            }
-        }
-
-        // check diagonal
-        for(int i = 1; i<=row; i++){
-            if(col-i>=0){
-                // left diagonal
-                if(board[row-i][col-i] == 'Q'){
-                    return false;
-                }
-            }
-            if(col+i <size){
-                // right diagonal
-                if(board[row-i][col+i] == 'Q'){
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
-    void helper(vector<string> &board, int row, int size){
-        if(row == size){
-            count++;
+    int allRowsDone = 0;
+    void solve(vector<vector<int>> board,int row){
+        if(row==board.size()){
+            allRowsDone++;
             return;
         }
-
-        for(int i = 0; i<size; i++){
-            if(checkValid(board, row, i, size)){
-                board[row][i] = 'Q';
-                helper(board, row+1, size);
-                board[row][i] = '.';
+        // put the queen in row where there is 0
+        for(int col=0;col<board.size();col++){
+            if(board[row][col]==0){
+                vector<vector<int>> board_copy = board;
+                // put queen at row, col by marking 1 
+                // mark the whole col as 1
+                for(int i=row;i<board.size();i++){
+                    board_copy[i][col] = 1;
+                }
+                // mark diagonal 
+                int j=0;
+                for(int i=row;i<board.size();i++){
+                    if(j+col<board.size()){
+                        board_copy[i][col+j]=1;
+                    }
+                    if(col-j>=0){
+                        board_copy[i][col-j]=1;
+                    }
+                    j++;
+                }
+                solve(board_copy,row+1);
             }
         }
     }
     int totalNQueens(int n) {
-        string str;
-        str.append(n, '.');
-        vector<string> board(n, str);
-        count = 0;
-        helper(board, 0, n);
-        return count;
+        vector<vector<int>> board(n,vector<int>(n,0));
+        solve(board,0);
+        return allRowsDone;
     }
 };
