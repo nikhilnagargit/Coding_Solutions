@@ -10,54 +10,53 @@
  */
 class Solution {
 public:
-    ListNode* mergeList(ListNode* head1,ListNode* head2){
-        if(!head1) return head2;
-        if(!head2) return head1;
-        head1 = sortList(head1);
-        head2 = sortList(head2);
-        ListNode* head;
-        if(head1->val<head2->val){head = head1; head1 = head1->next;}
-        else {head = head2; head2 = head2->next;}
 
-        ListNode* prev = head;
-        while(head1!=nullptr and head2!=nullptr){
-            if(head1->val<head2->val){
-                prev->next = head1;
-                prev = head1;
-                head1 = head1->next;
+// find mid 
+    ListNode* findMid(ListNode* head){
+        if(!head) return head;
+        ListNode* fast = head;
+        ListNode* slow = head;
+        while(fast->next and fast->next->next){
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        return slow;
+    }
+
+    ListNode* merge(ListNode* temp1,ListNode* temp2){
+        if(!temp1) return temp2;
+        if(!temp2) return temp1;
+        ListNode* dummy = new ListNode();
+        ListNode* temp = dummy;
+        while(temp1 and temp2){
+            if(temp1->val>temp2->val){
+                temp->next = temp2;
+                temp2 = temp2->next;
+                temp = temp->next;
             }
             else{
-                prev->next = head2;
-                prev = head2;
-                head2 = head2->next;
+                temp->next = temp1;
+                temp1 = temp1->next;
+                temp = temp->next;
             }
         }
-        if(!head1){
-            prev->next = head2;
+        if(!temp1){
+            temp->next = temp2;
         }
-        else{
-            prev->next = head1;
+        if(!temp2){
+            temp->next = temp1;
         }
-        return head;
+        return dummy->next;
     }
-
-    ListNode* partition(ListNode* head){
-        if(!head or !head->next)return head;
     
-        ListNode* slow = head;
-        ListNode* fast = head;
-        while(fast->next!=nullptr and fast->next->next!=nullptr){
-            fast = fast->next->next;
-            slow = slow->next;
-        }
-        ListNode* head2 = slow->next;
-        slow->next = nullptr;
-        return mergeList(head,head2);
-    }
-
     ListNode* sortList(ListNode* head) {
-        if(!head or !head->next)return head;
-        return partition(head);
-        
+        if(!head or !head->next) return head;
+        ListNode* mid = findMid(head);
+        ListNode* left_start_node = head;
+        ListNode* right_start_node = mid->next;
+        mid->next = nullptr;
+        ListNode* left = sortList(left_start_node);
+        ListNode* right = sortList(right_start_node);
+        return merge(left,right);
     }
 };
