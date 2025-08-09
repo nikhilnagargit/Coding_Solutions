@@ -11,18 +11,17 @@
  */
 class Solution {
 public:
-    TreeNode* makeHBT(int left,int right,vector<int>& nums){
+    TreeNode* binarySearch(vector<int>& nums,int left,int right){
         if(left>right){
             return nullptr;
         }
-
         int mid = left+(right-left)/2;
-        TreeNode* root =new TreeNode(nums[mid]);
-        root->left = makeHBT(left,mid-1,nums);
-        root->right = makeHBT(mid+1,right,nums);
+        TreeNode* root = new TreeNode(nums[mid]);
+        root->right = binarySearch(nums,mid+1,right);
+        root->left  = binarySearch(nums,left,mid-1);
         return root;
     }
     TreeNode* sortedArrayToBST(vector<int>& nums) {
-        return makeHBT(0,nums.size()-1,nums);
+        return binarySearch(nums,0,nums.size()-1);
     }
 };
