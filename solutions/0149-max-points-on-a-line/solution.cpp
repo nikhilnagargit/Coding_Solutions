@@ -1,20 +1,28 @@
 class Solution {
 public:
     int maxPoints(vector<vector<int>>& points) {
-        int n=points.size();
-        int ans=1;
-        for(int i=0;i<n;i++){
-             map<double,int> mp;
-            for(int j=i+1;j<n;j++){
-                double x1=points[i][0],y1=points[i][1];
-                double x2=points[j][0],y2=points[j][1];
-                double m=(y2-y1)/(x2-x1);
-                if(x1==x2)m=1e10;
-                if(mp.count(m))mp[m]++;
-                else mp[m]=2;
-                ans=max(ans,mp[m]);
+        
+        int max_count = 1;
+
+        for(int i=0;i<points.size();i++){
+            unordered_map<double,int> m;
+            for(int j=i+1;j<points.size();j++){
+                double slope = 0 ;
+                if(points[i][0]-points[j][0]!=0)
+                    slope =(points[i][1]-points[j][1])/(1.0*(points[i][0]-points[j][0]));
+                else
+                    slope = 1e10;
+                if(m.find(slope)!=m.end()){
+                    m[slope] +=1;
+                }
+                else{
+                    m[slope] = 2;
+                }
+                max_count = max(max_count,m[slope]);
             }
         }
-        return ans;
+        return max_count;
+
     }
 };
+
