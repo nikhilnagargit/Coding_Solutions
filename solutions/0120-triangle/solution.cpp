@@ -1,35 +1,21 @@
 class Solution {
 public:
     int minimumTotal(vector<vector<int>>& triangle) {
-        vector<int> prev;
-        vector<int> curr;
-        prev.push_back(triangle[0][0]);
-
-        if(triangle.size()==0){
-            return 0;
-        }
-        if(triangle.size()==1){
-            return triangle[0][0];
-        }
-
+        vector<int> dp;
+        dp.push_back(triangle[0][0]);
         for(int i=1;i<triangle.size();i++){
+            vector<int> dp_copy = dp;
+            dp_copy.push_back(0);
             for(int j=0;j<triangle[i].size();j++){
-                if(j==0)
-                curr.push_back(triangle[i][j]+prev[j]);
-                else if(j==triangle[i].size()-1)
-                curr.push_back(triangle[i][j]+prev[j-1]);
+                if(j-1>=0 and j<dp.size())
+                dp_copy[j]=min(triangle[i][j]+dp[j-1],triangle[i][j]+dp[j]);
+                else if(j-1>=0)
+                dp_copy[j]=triangle[i][j]+dp[j-1];
                 else
-                curr.push_back(triangle[i][j]+min(prev[j-1],prev[j]));
+                dp_copy[j]=triangle[i][j]+dp[j];
             }
-            prev = curr;
-            curr.clear();
+            dp = dp_copy;
         }
-        
-        // return minimum from prev
-        int mini = INT_MAX;
-        for(int i=0;i<prev.size();i++){
-            mini = min(mini,prev[i]);
-        }
-        return mini;
+        return *min_element(dp.begin(),dp.end());
     }
 };
