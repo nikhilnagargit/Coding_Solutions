@@ -1,44 +1,32 @@
 class Solution {
 public:
     string longestPalindrome(string s) {
-        int i=0;
-        int l=i;
-        int r=i;
-        string max_s="";
-        string temp_s="";
+        vector<vector<int>> dp(s.size(),vector<int>(s.size(),0));
+        string maxi = "";
+        for(int diag=0;diag<s.size();diag++){
+            int starti = 0;
+            int startj = diag;
+            for(int step=0;step<s.size()-diag;step++){
+                int  i = starti+step;
+                int  j = startj+step;
+                if(i==j){
+                    dp[i][j]=1;
+                }
+                else if(i==j-1 and s[i]==s[j]){
+                    dp[i][j] =1 ;
+                }
+                else if(s[i]==s[j]){
+                    dp[i][j]=dp[i+1][j-1];
+                }
+                else{
+                    dp[i][j]=0;
+                }
 
-        while(i<s.size()){
-            temp_s += s[i];
-            l = i-1;
-            r = i+1;
-            while(l>=0 and r<s.size() and s[l]==s[r]){
-                temp_s = s[l]+temp_s+s[r];
-                l--;
-                r++;
+                if(dp[i][j]==1 and maxi.size()<j-i+1){
+                    maxi = s.substr(i,j-i+1);
+                }
             }
-            if(max_s.size()<temp_s.size()){
-                max_s = temp_s;
-            }
-            i++;
-            temp_s = "";
         }
-
-        i=0;
-        while(i<s.size()){
-            temp_s="";
-            l = i;
-            r = i+1;
-            while(l>=0 and r<s.size() and s[l]==s[r]){
-                temp_s = s[l]+temp_s+s[r];
-                l--;
-                r++;
-            }
-            if(max_s.size()<temp_s.size()){
-                max_s = temp_s;
-            }
-            i++;
-            temp_s = "";
-        }
-        return max_s;
+        return maxi;
     }
 };
