@@ -1,28 +1,23 @@
 class Solution {
 public:
-    unordered_map<string,bool> m;
 
-    bool solve(string& s1,string&s2, string& s3,int i,int j,int k){
-        if(k==s3.size()){
-            return true;
-        }
-        string s = to_string(i)+"-"+to_string(j)+"-"+to_string(k);
-        if(m.find(s)!=m.end()){
-            return m[s];
-        }
-        int nexti = i+1;
-        int nextj = j+1;
-        if(s1[nexti]==s3[k] and solve(s1,s2,s3,nexti,j,k+1)){ m[s]=true; return true;}
-        if(s2[nextj]==s3[k] and solve(s1,s2,s3,i,nextj,k+1)){m[s]=true; return true;}
-        m[s] = false;
-        return false;
-    }
-    
     bool isInterleave(string s1, string s2, string s3) {
-        if(s1.size()+s2.size()!=s3.size())return false;
-        int i=-1;
-        int j=-1;
-        int k=0;
-        return solve(s1,s2,s3,i,j,k);
+        if(s1.size()+s2.size()!=s3.size()) return false;
+        vector<vector<int>> dp(s1.size()+1,vector<int>(s2.size()+1,0));
+        dp[0][0]=1;
+        for(int i=1;i<=s1.size();i++){
+            if(s1[i-1]==s3[i-1] and dp[i-1][0]) dp[i][0]=1;
+        }
+        for(int i=1;i<=s2.size();i++){
+            if(s2[i-1]==s3[i-1] and dp[0][i-1]) dp[0][i]=1;
+        }
+        for(int i=1;i<=s1.size();i++){
+            for(int j=1;j<=s2.size();j++){
+                dp[i][j] = 0;
+                if(dp[i-1][j]==1 and s3[i+j-1]==s1[i-1]) dp[i][j]=1;
+                if(dp[i][j-1]==1 and s3[i+j-1]==s2[j-1]) dp[i][j]=1;
+            }
+        }
+        return dp[s1.size()][s2.size()];
     }
 };
