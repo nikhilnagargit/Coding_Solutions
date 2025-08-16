@@ -1,30 +1,23 @@
 class Solution {
 public:
-    vector<vector<int>> dp;
-    int solve(string& word1,string& word2,int i,int j){
-        if(dp[i][j]!=-1){
-            return dp[i][j];
-        }
-        if(j==word2.size()){
-            return (word1.size()-i);
-        }
-        if(i==word1.size()){
-            return (word2.size()-j);
-        }
+    int solve(string& word1, string& word2, int i,int j,vector<vector<int>>& dp){
+        if(i==word1.size()) return word2.size()-j;
+        if(j==word2.size()) return word1.size()-i;
+        if(dp[i][j]!=-1) return dp[i][j];
+        int min_cost = INT_MAX;
         if(word1[i]==word2[j]){
-            return  dp[i][j]= solve(word1,word2,i+1,j+1);
+            min_cost = min(min_cost,solve(word1,word2,i+1,j+1,dp));
         }
-        int result ;
-        result = min(solve(word1,word2,i+1,j),solve(word1,word2,i+1,j+1));
-        result = min(result,solve(word1,word2,i,j+1));        
-        return dp[i][j]=1+result;
+        else{
+            min_cost = min(min_cost,1+solve(word1,word2,i+1,j+1,dp));
+            min_cost = min(min_cost,1+solve(word1,word2,i+1,j,dp));
+            min_cost = min(min_cost,1+solve(word1,word2,i,j+1,dp));
+        }
+        return dp[i][j]=min_cost;
     }
 
     int minDistance(string word1, string word2) {
-        if(word1.size()<word2.size()){
-            minDistance(word2,word1);
-        }
-        dp = vector<vector<int>>(501,vector<int>(501,-1));
-        return solve(word1,word2,0,0);
+        vector<vector<int>> dp(word1.size()+1,vector<int>(word2.size()+1,-1));
+        return solve(word1,word2,0,0,dp);
     }
 };
