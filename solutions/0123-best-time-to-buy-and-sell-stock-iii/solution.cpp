@@ -1,30 +1,32 @@
 class Solution {
 public:
-    
-    int solve(vector<int>&prices, int rem_transaction,int day,vector<vector<int>>& m){
-        if(m[rem_transaction][day]!=-1)return m[rem_transaction][day];
+    vector<string> actions = {"buy","sell","buy","sell"};
+    int solve(vector<int>& prices, int i,int a,vector<vector<int>>& dp){
+        
+        if(i==prices.size() or a==actions.size())return 0;
 
-        if(rem_transaction==0){
-            return 0;
-        }
-        if(day>=prices.size()) return 0;
-        // include current day in transaction
-        int ans1 ;
-        if(rem_transaction%2==0){
-            ans1 = -prices[day]+solve(prices,rem_transaction-1,day+1,m);
+        if(dp[i][a]!=-1) return dp[i][a];
+
+        if(actions[a]=="buy"){
+            int ans = INT_MIN;
+            //buy current and move to next for selling
+            ans = max(ans,solve(prices,i+1,a+1,dp)-prices[i]);
+            //don't buy move to next to buy
+            ans = max(ans,solve(prices,i+1,a,dp));
+            return dp[i][a]=ans;
         }
         else{
-            ans1 = prices[day] + solve(prices,rem_transaction-1,day+1,m);
+            int ans = INT_MIN;
+            //sell current and move next to buy
+            ans = max(ans,solve(prices,i+1,a+1,dp)+prices[i]);
+            //dont' sell  move next to sell
+            ans = max(ans,solve(prices,i+1,a,dp));
+            return dp[i][a]=ans;
         }
-        // exclude current day in transaction
-        int ans2 = solve(prices,rem_transaction,day+1,m);
-        m[rem_transaction][day] = max(ans1,ans2);
-        return m[rem_transaction][day];
     }
+
     int maxProfit(vector<int>& prices) {
-        vector<vector<int>>m(5,vector<int>(prices.size()+1,-1));
-        int rem_transaction = 4;
-        int curr_index = 0;
-        return solve(prices,rem_transaction,curr_index,m);
+        vector<vector<int>> dp(prices.size(),vector<int>(actions.size(),-1));
+        return solve(prices,0,0,dp);
     }
 };
