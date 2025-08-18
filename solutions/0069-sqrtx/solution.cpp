@@ -1,22 +1,15 @@
 class Solution {
 public:
     int mySqrt(int x) {
-        if(x==1)return 1;
-        int left = 1;
-        int right = x/2;
-        while(left<=right){
-            int mid = left+(right-left)/2;
-            if(mid == x/mid){
-                return mid;
+        long long res = 0;
+        for(int i=31;i>=0;i--){
+            //mask
+            int mask = 1<<i;
+            res = res|mask;
+            if(res*res > x){
+                res = res^mask;
             }
-            else if(mid<x/mid){
-                left = mid+1;
-            }
-            else {
-                right = mid-1;
-            }
-          
         }
-          return right;
+        return res;
     }
 };
