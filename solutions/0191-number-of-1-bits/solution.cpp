@@ -1,9 +1,10 @@
 class Solution {
 public:
-    int hammingWeight(uint32_t n) {
-        int count=0;
-        for(int i=0;i<32;i++){
-            if((1<<i)&n){
+    int hammingWeight(int n) {
+        int count = 0;
+        for(int i=31;i>=0;i--){
+            int mask = 1<<i;
+            if((n&mask)){
                 count++;
             }
         }
