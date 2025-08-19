@@ -1,40 +1,26 @@
 class Solution {
 public:
     bool isIsomorphic(string s, string t) {
-        int counter =0;
-        map<char,int> m;
-        string code1="";
-        string code2="";
-
+        if(s.size()!=t.size())return false;
+        unordered_map<char,int>s1;
+        unordered_map<char,int>s2;
+        int count1=0;
+        int count2=0;
         for(int i=0;i<s.size();i++){
-            if(m.find(s[i])==m.end()){
-                m[s[i]] = counter;
-                code1+=to_string(counter)+".";
-                counter++;
+            if(s1.count(s[i])==0){
+                s1[s[i]]=count1;
+                count1++;  
             }
-            else{
-                code1+=to_string(m[s[i]])+".";
-            }
+            s[i]= '0'+s1[s[i]];
         }
-
-        m.clear();
-
-        counter =0;
-                for(int i=0;i<t.size();i++){
-            if(m.find(t[i])==m.end()){
-                m[t[i]] = counter;
-                code2+=to_string(counter)+".";
-                counter++;
+        for(int i=0;i<t.size();i++){
+            if(!s2.count(t[i])){
+                s2[t[i]]=count2;
+                count2++;  
             }
-            else{
-                code2+=to_string(m[t[i]])+".";
-            }
+            t[i]='0'+(s2[t[i]]);
         }
+        return s==t;
 
-       
-        if(code1==code2){
-            return true;
-        }
-        return false;
     }
 };
