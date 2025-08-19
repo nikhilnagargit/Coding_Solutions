@@ -1,37 +1,43 @@
 class Solution {
 public:
-    bool wordPattern(string pattern, string s) {
-        map<char,string> m;
-        unordered_set<string> myset;
-
-        int i=0;
-        int j=0;
-        while(i<s.size() and j<pattern.size()){
-            string word = "";
-            while(i<s.size() and s[i]!=' '){
-                word+=s[i];
-                i++;}
-            if(m.find(pattern[j])==m.end()){
-                if(myset.find(word)!=myset.end()){
-                    return false;
-                }
-                m[pattern[j]]=word;
-                myset.insert(word);
+    bool wordPattern(string p, string s) {
+        vector<string> v;
+        string temp = "";
+        for(auto c: s){
+            if(c==' '){
+                v.push_back(temp);
+                temp = "";
             }
             else{
-                if(m[pattern[j]]!=word){
+                temp+= c;
+            }
+        }
+        if(temp!="")
+        v.push_back(temp);
+
+        if(v.size()!=p.size()) return false;
+        unordered_map<char,string> m1;
+        unordered_map<string,char> m2;
+
+        for(int i=0;i<p.size();i++){
+            if(m1.count(p[i]) and m2.count(v[i])){
+                if(m1[p[i]]==v[i] and m2[v[i]]==p[i]){
+                    // cout<<"1";
+                }
+                else{
+                    //  cout<<"2";
                     return false;
                 }
             }
-            i++;
-            j++;
+            else if(!m1.count(p[i]) and !m2.count(v[i])){
+                m1[p[i]]=v[i];
+                m2[v[i]]=p[i];
+            }
+            else{
+                //  cout<<"3";
+                return false;
+            }
         }
-        cout<<i<<","<<s.size();
-        cout<<endl;
-        cout<<j<<","<<pattern.size();
-        if(i!=s.size()+1 or j!=pattern.size())
-        return false;
-
         return true;
     }
 };
