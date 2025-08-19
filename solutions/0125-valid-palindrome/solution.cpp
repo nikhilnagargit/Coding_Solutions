@@ -1,22 +1,24 @@
 class Solution {
 public:
     bool isPalindrome(string s) {
-        string filtered = "";
-        for(int i=0;i<s.size();i++){
-            if('a'<=s[i] and s[i]<='z'){
-                filtered+=s[i];
+        //filter and reform. or just ignore 
+        int left = 0;
+        int right = s.size();
+        while(left<right){
+            char c1 = tolower(s[left]);
+            char c2 = tolower(s[right]);
+            if(((c1>='a' and c1<='z') or (c1>='0' and c1<='9')) and ((c2>='a' and c2<='z' )or(c2>='0' and c2<='9'))){
+                if(c1!=c2) return false;
+                left++;
+                right--;
             }
-            else if('A'<=s[i] and s[i]<='Z'){
-                filtered+=tolower(s[i]);
+            else if((c1>='a' and c1<='z') or (c1>='0' and c1<='9')){
+                right--;
             }
-            else if('0'<=s[i] and s[i]<='9'){
-                filtered+=s[i];
+            else{
+                left++;
             }
         }
- 
-    string temp = filtered;
-    reverse(filtered.begin(),filtered.end());
-    return filtered==temp;
+        return true;
     }
-
 };
