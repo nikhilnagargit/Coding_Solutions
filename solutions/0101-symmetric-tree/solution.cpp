@@ -11,17 +11,15 @@
  */
 class Solution {
 public:
-
-    bool solve(TreeNode* root1, TreeNode* root2){
-        if(root1==nullptr and root2==nullptr){
-            return true;
-        }
-        if((root1==nullptr and root2!=nullptr) or (root2==nullptr and root1!=nullptr))
-        return false;
-
-        return root1->val==root2->val and solve(root1->left,root2->right) and solve(root1->right,root2->left);
+    bool preorder(TreeNode* a,TreeNode* b){
+        if(!a and !b) return true;
+        if(!a or !b) return false;
+        if(a->val!=b->val) return false;
+        bool ar = preorder(a->left,b->right);
+        bool br = preorder(a->right,b->left);
+        return ar&br;
     }
     bool isSymmetric(TreeNode* root) {
-       return  solve(root->left,root->right);
+        return preorder(root->left,root->right);
     }
 };
