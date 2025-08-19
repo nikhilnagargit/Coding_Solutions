@@ -11,15 +11,9 @@
  */
 class Solution {
 public:
-    bool solve(TreeNode* root,int& target,int sum){
-        if(root==nullptr) return false;
-        if(root->left==nullptr and root->right==nullptr and root->val+sum==target){
-            return true;
-        }
-        return solve(root->left,target,sum+root->val) or solve(root->right,target,sum+root->val);
-    }
     bool hasPathSum(TreeNode* root, int targetSum) {
-        if(!root)return false;
-        return solve(root,targetSum,0);
+        if(!root) return false;
+        if(targetSum==root->val and !root->left and !root->right) return true;
+        return hasPathSum(root->right,targetSum-root->val) | hasPathSum(root->left,targetSum-root->val);
     }
 };
