@@ -1,39 +1,31 @@
 class Solution {
 public:
     int countSquares(vector<vector<int>>& matrix) {
-        int counter = 0 ;
-        for(int i=0;i < matrix.size();i++){
-            for(int j=0;j < matrix[0].size();j++){
-                int temp = counter;
-                // cout<<"i:"<<i<<",j:"<<j<<" ->";
-                int side = 2;
-                int next = true;
-                if(matrix[i][j]==1) counter++;
-                else next = false;
-                while(next and i+side <= matrix.size() and j+side <= matrix[0].size()){
-                
-                        for(int a=j;a<j+side;a++){
-                            if(matrix[i+side-1][a]!=1){
-                                next = false;
-                                bool leftright = false;
-                                break;
-                            }
-                        }
-                 
-                        for(int b=i;b<i+side;b++){
-                            if(matrix[b][j+side-1]!=1){
-                                next = false;
-                                break;
-                            }
-                        }
-                        if(next)
-                        counter++;
-                        side++;
+        vector<vector<int>> dp(matrix.size(),vector<int>(matrix[0].size(),0));
+        int sum = 0;
+        for(int i=0;i<matrix.size();i++){
+            for(int j=0;j<matrix[0].size();j++){
+                if(matrix[i][j]==0){
+                    // cout<<dp[i][j]<<",";
+                    continue;
                 }
-
-                // cout<<counter-temp<<endl;
+                if(i==0 and j==0){
+                    dp[i][j]= matrix[i][j];
+                }
+                else if(i==0){
+                    dp[i][j] = max(dp[i][j-1],1);
+                }
+                else if(j==0){
+                    dp[i][j] = max(dp[i-1][j],1);
+                }
+                else{
+                    dp[i][j] = 1+min({dp[i-1][j],dp[i][j-1],dp[i-1][j-1]});
+                }
+                sum+= dp[i][j];
+                // cout<<dp[i][j]<<",";
             }
+            // cout<<endl;
         }
-    return counter;
+        return sum;
     }
 };
