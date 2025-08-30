@@ -1,11 +1,6 @@
 class Solution {
 public:
-    bool isValid(char i){
-        if((i<='9' and i>='1') or i=='.'){
-            return true;
-        }
-        return false;
-    }
+
 
     bool isValidSudoku(vector<vector<char>>& board) {
         int m  = 9;
@@ -14,14 +9,14 @@ public:
             unordered_set<char> rows;
             unordered_set<char> cols;
             for(int j=0;j<m;j++){
-                if((!isValid(board[i][j]))or (board[i][j]!='.' and rows.count(board[i][j]))>0){
+                if(board[i][j]!='.' and rows.count(board[i][j])>0){
                     // cout<<i<<j;
                     return false;
                 }
                 else{
                     rows.insert(board[i][j]);
                 }
-                if((!isValid(board[j][i])) or (board[j][i]!='.' and cols.count(board[j][i]))>0){
+                if(board[j][i]!='.' and cols.count(board[j][i])>0){
                     //   cout<<"2";
                     return false;
                 }
@@ -39,7 +34,7 @@ public:
                 unordered_set<char> s;
                 for(int i=0;i<3;i++){
                     for(int j=0;j<3;j++){
-                        if((!isValid(board[i+a*3][j+b*3])) or (board[i+a*3][j+b*3]!='.' and s.count(board[i+a*3][j+b*3]))>0){
+                        if(board[i+a*3][j+b*3]!='.' and s.count(board[i+a*3][j+b*3])>0){
                             //   cout<<"3";
                             return false;
                         }
