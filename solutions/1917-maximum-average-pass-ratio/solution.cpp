@@ -1,37 +1,35 @@
+
 class Solution {
 public:
     double maxAverageRatio(vector<vector<int>>& classes, int extraStudents) {
-        // Lambda to calculate the gain of adding an extra student
-        auto calculateGain = [](int passes, int totalStudents) {
-            return (double)(passes + 1) / (totalStudents + 1) -
-                   (double)passes / totalStudents;
-        };
-
-        // Max heap to store (-gain, passes, totalStudents)
-        priority_queue<pair<double, pair<int, int>>> maxHeap;
-        for (const auto& singleClass : classes) {
-            maxHeap.push({calculateGain(singleClass[0], singleClass[1]),
-                          {singleClass[0], singleClass[1]}});
+        int n = classes.size();
+        priority_queue<pair<double,int>> pq;
+        
+        for(int i = 0; i < n; i++){
+            int pass = classes[i][0];
+            int total = classes[i][1];
+            double gain = (double)(pass+1)/(total+1) - (double)pass/total;
+            pq.push({gain, i});
         }
 
-        // Distribute extra students
-        while (extraStudents--) {
-            auto [currentGain, classInfo] = maxHeap.top();
-            maxHeap.pop();
-            int passes = classInfo.first;
-            int totalStudents = classInfo.second;
-            maxHeap.push({calculateGain(passes + 1, totalStudents + 1),
-                          {passes + 1, totalStudents + 1}});
+        while(extraStudents--){
+            auto top = pq.top(); pq.pop();
+            int idx = top.second;
+
+            classes[idx][0]++;
+            classes[idx][1]++;
+
+            int pass = classes[idx][0];
+            int total = classes[idx][1];
+            double gain = (double)(pass+1)/(total+1) - (double)pass/total;
+            pq.push({gain, idx});
         }
 
-        // Calculate the final average pass ratio
-        double totalPassRatio = 0;
-        while (!maxHeap.empty()) {
-            auto [_, classInfo] = maxHeap.top();
-            maxHeap.pop();
-            totalPassRatio += (double)classInfo.first / classInfo.second;
+        double ans = 0.0;
+        for(auto &c : classes){
+            ans += (double)c[0] / c[1];
         }
 
-        return totalPassRatio / classes.size();
+        return ans / n;
     }
 };
