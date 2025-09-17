@@ -1,52 +1,43 @@
-class FoodRatings {
-public:
 
-// Declaring a custom comparator
-struct comp {
-    // Operator() overloading
-    bool operator() (const pair<int, string>& p1,
-                    const pair<int, string>& p2) const
-    {
-        if(p1.first>p2.first){
-            return false;
-        }
-        else if(p1.first<p2.first){
+struct cmp{
+    bool operator()(pair<int,string>& a, pair<int,string>& b){
+        if(a.first<b.first){
             return true;
         }
-        if(p1.second<=p2.second){
-            return false;
+        else if(a.first==b.first){
+            if(a.second>b.second){
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 };
 
-        // cout<<endl<<"After change- ";
-        // for(auto item:Map[FC_mapping[food]]){
-        //     cout<<item.first<<":"<<item.second<<", ";
-        // }
-        // cout<<endl;
-    unordered_map<string,set<pair<int,string>,comp>> Map;
-    unordered_map<string,string>FC_mapping;
-    unordered_map<string,int>FR_mapping;
-    
+class FoodRatings {
+public:
+
+    unordered_map<string,priority_queue<pair<int,string>,vector<pair<int,string>>,cmp>> CFR_map;
+    unordered_map<string,int> FR_map;
+    unordered_map<string,string> FC_map;
+
     FoodRatings(vector<string>& foods, vector<string>& cuisines, vector<int>& ratings) {
         for(int i=0;i<foods.size();i++){
-            FC_mapping[foods[i]] = cuisines[i];
-            FR_mapping[foods[i]] = ratings[i];
-            pair<int,string> p = {ratings[i],foods[i]};
-            Map[cuisines[i]].insert(p);
+            FR_map[foods[i]]  = ratings[i];
+            FC_map[foods[i]] = cuisines[i];
+            CFR_map[cuisines[i]].push({ratings[i],foods[i]});
         }
     }
     
     void changeRating(string food, int newRating) {
-        Map[FC_mapping[food]].erase({FR_mapping[food],food});
-        FR_mapping[food] = newRating;
-        Map[FC_mapping[food]].insert({newRating,food});
+        FR_map[food] = newRating;
+        CFR_map[FC_map[food]].push({newRating,food});
     }
     
     string highestRated(string cuisine) {
-        auto item =  *(Map[cuisine].rbegin());
-        return item.second;
+        while(CFR_map[cuisine].top().first!=FR_map[CFR_map[cuisine].top().second]){
+            CFR_map[cuisine].pop();
+        }
+        return CFR_map[cuisine].top().second;
     }
 };
 
