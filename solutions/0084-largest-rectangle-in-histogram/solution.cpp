@@ -2,21 +2,39 @@
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        const int n = heights.size();
-        stack<int> st;                 // stores indices with increasing heights
-        long long best = 0;
+        //store next smaller elements for left to right - 
 
-        for (int i = 0; i <= n; ++i) { // sentinel 0 at the end to flush the stack
-            int cur = (i == n ? 0 : heights[i]);
-            while (!st.empty() && cur < heights[st.top()]) {
-                int h = heights[st.top()]; st.pop();
-                int left = st.empty() ? -1 : st.top();   // index of previous smaller element
-                int width = i - left - 1;                // span where 'h' is the minimum
-                best = max(best, 1LL * h * width);
+        vector<int> leftNextSmaller(heights.size(),-1);
+        vector<int> rightNextSmaller(heights.size(),heights.size());
+
+        stack<int> stk;
+        for(int i=0;i<heights.size();i++){
+            while(!stk.empty() and heights[i]<=heights[stk.top()]){
+                stk.pop();
             }
-            st.push(i);
+            if(!stk.empty()){
+                leftNextSmaller[i] = stk.top();
+            }
+            stk.push(i);
         }
-        return (int)best;
+        while(!stk.empty()){
+            stk.pop();
+        }
+        for(int i=heights.size()-1;i>=0;i--){
+            while(!stk.empty() and heights[i]<=heights[stk.top()]){
+                stk.pop();
+            }
+            if(!stk.empty()){
+                rightNextSmaller[i] = stk.top();
+            }
+            stk.push(i);
+        }  
+        int maxarea = 0;
+        for(int i=0;i<heights.size();i++){
+            int area =(rightNextSmaller[i]-leftNextSmaller[i]-1)*heights[i];
+            maxarea = max(maxarea,area);
+        }
+        return maxarea;
     }
 };
 
