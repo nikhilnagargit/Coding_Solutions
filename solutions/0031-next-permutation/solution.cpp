@@ -1,37 +1,30 @@
 class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
-        int breakpoint = 0;
-        for(int i=nums.size()-1;i>0;i--){
-            if(nums[i]<=nums[i-1]){
-                continue;
-            }
-            breakpoint = i;
-            break;
-        }
-        // cout<<breakpoint;
-        //find the next greater number of breakpoint
-        //swap with it
-        int nextgreater = nums[breakpoint];
-        int nextgreateridx = breakpoint;
-        for(int i=breakpoint+1;i<nums.size();i++){
-            if(nums[i]<nextgreater and breakpoint>0 and nums[breakpoint-1]<nums[i]){
-                nextgreater = nums[i];
-                nextgreateridx = i;
+        // find the descending suffix subarray
+        // swap the,  prev and first item of suffix array
+        // sort the new suffix
+        int suffixfirstidx = -1;
+        for(int i=nums.size()-2;i>=0;i--){
+            if(nums[i+1]>nums[i]){
+                suffixfirstidx = i;
+                break;
             }
         }
-        if(breakpoint!=0)
-        swap(nums[breakpoint-1],nums[nextgreateridx]);
-        sort(nums.begin()+breakpoint,nums.end());
+        if(suffixfirstidx==-1){
+            //sort the while array
+            sort(nums.begin(),nums.end());
+        }
+        else{
+            //find the just bigger number to swap
+            for(int k=nums.size()-1;k>=suffixfirstidx+1;k--){
+                if(nums[k]>nums[suffixfirstidx]){
+                     swap(nums[suffixfirstidx],nums[k]);
+                     break;
+                }
+            }
+            sort(nums.begin()+suffixfirstidx+1,nums.end());
+        }
+
     }
 };
-
-//find the breakpoint
-//all left to breakpoinrt sort them
-//all right to breakpoint will be same
-//breakpoint will be first item from last which is lesser than next
-// 422432 -> 424223.  423224
-
-// 42221 -> 12224
-
-// 16789 -> 16798
