@@ -1,30 +1,21 @@
 class Solution {
 public:
+    double solve(double x, long n){
+        if(x==0) return 0;
+        if(n==0) return 1;
+        if(n<0){
+            return 1.0/solve(x,(-n));
+        }
+        // equalize this expression, so balanced tree is created while solving
+        if(n%2==0){
+            // even
+            double half =  solve(x,n/2);
+            return half*half;
+        }
+        // odd
+        return  x * solve(x,n-1);
+    }
     double myPow(double x, int n) {
-        double ans = 1;
-        if(n==0){
-            return 1;
-        }
-        if(x==1)
-            return 1;
-
-        if(x==-1)
-            if(n%2==0) return 1;
-            else return -1;
-
-        if(n>0){
-            while(n){
-                ans = ans*x;
-                n=n-1;
-            }
-            return ans;
-        }
-
-        while(n){
-            ans = ans/x;
-            if(abs(ans)<0.0000001) return 0;
-            n=n+1;
-        }
-        return ans;
+        return solve(x,n);
     }
 };
