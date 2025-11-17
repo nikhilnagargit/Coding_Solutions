@@ -3,21 +3,24 @@ public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
         vector<vector<int>> ans;
         sort(intervals.begin(),intervals.end());
-
-        vector<int> prev = intervals[0];
-
+        ans.push_back(intervals[0]);
         for(int i=1;i<intervals.size();i++){
-            vector<int> curr = intervals[i];
-            if(prev[1]>=curr[0]){
-                prev[1] = max(prev[1],curr[1]);
+            int a = ans[ans.size()-1][0];
+            int b = ans[ans.size()-1][1];
+            int c = intervals[i][0];
+            int d = intervals[i][1];
+            if(a<=c and c<=b){
+                if(d<=b){
+                    
+                }
+                else{
+                    ans[ans.size()-1][1]=d;
+                }
             }
             else{
-                ans.push_back(prev);
-                prev = curr;
+                ans.push_back({c,d});
             }
         }
-        ans.push_back(prev);
-
         return ans;
     }
 };
