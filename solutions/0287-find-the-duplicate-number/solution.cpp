@@ -1,24 +1,15 @@
 class Solution {
 public:
     int findDuplicate(vector<int>& nums) {
-        //slow and fast pointer like linked list
-        int slow = 0;
-        int fast = 0;
-        int flag = true;
-
-       while(slow!=fast or flag){
-        flag = false;
-            slow = nums[slow];
-            fast = nums[nums[fast]];
+        for(int i=0;i<nums.size();i++){
+            int idx = abs(nums[i])-1;
+            if(nums[idx]<0){
+                return abs(nums[i]);
+            }
+            else{
+                nums[idx]=-1*nums[idx];
+            }
         }
-
-        int a = slow;
-        int b = 0;
-        while(a!=b){
-            a = nums[a];
-            b = nums[b];
-        }
-
-        return a;
+        return -1;
     }
 };
