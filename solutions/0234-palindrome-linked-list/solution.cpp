@@ -10,32 +10,38 @@
  */
 class Solution {
 public:
-    
- bool isPalindrome(ListNode* head) {
-        ListNode* slow = head,*fast = head,*temp = head;
-        // Moving slow pointer to middle of linked list
-        while(fast->next && fast->next->next)
-        {
-            slow = slow->next;
-            fast = fast->next->next;
-        }
-        slow = slow->next;
-        ListNode* prev = NULL,*curr = slow,*next;
-        // Reversing the second half of the linked list
-        while(curr != NULL)
-        {
-            next = curr->next;
+    ListNode* reverseLL(ListNode* h){
+        if(!h or !h->next)return h;
+        ListNode* prev = nullptr;
+        ListNode* curr = h;
+        ListNode* nxt = h->next;
+        while(nxt){
             curr->next = prev;
             prev = curr;
-            curr = next;
+            curr = nxt;
+            nxt = nxt->next;
         }
-        // Comparing prev which is currently the head of the reversed second half with temp which points to the head of the first half
-        while(prev != NULL)
-        {
-            if(prev->val != temp->val)
-                return false;
-            prev = prev->next;
-            temp = temp->next;
+        curr->next = prev;
+        return curr;
+    }
+
+    bool isPalindrome(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while(fast and fast->next and fast->next->next){
+            fast = fast->next->next;
+            slow = slow->next;
+        }
+
+        ListNode* newh = slow->next;
+        slow->next = nullptr;
+        ListNode* start = reverseLL(newh);
+        ListNode* start2 = head;
+        while(start and start2){
+            if(start->val != start2->val) return false;
+            start = start->next;
+            start2 = start2->next;
         }
         return true;
     }
