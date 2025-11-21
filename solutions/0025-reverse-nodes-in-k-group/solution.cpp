@@ -10,48 +10,44 @@
  */
 class Solution {
 public:
-    ListNode* reverseLL(ListNode* head){
-        if(!head or !head->next){
-            return head;
+    pair<ListNode* ,ListNode*> reverseList(ListNode* head){
+        if(!head)return {nullptr,nullptr};
+        if(!head->next) return {head,head};
+        ListNode* last = head;
+        ListNode* prev = nullptr;
+        while(head and head->next){
+            ListNode* temp = head->next;
+            head->next = prev;
+            prev = head;
+            head = temp;
         }
-        ListNode* prev = head;
-        ListNode* curr = head->next;
-        ListNode* nxt = head->next->next;
-
-        head->next = nullptr;
-        while(nxt){
-            curr->next = prev;
-            prev = curr;
-            curr = nxt;
-            nxt = nxt->next;
-        }
-        curr->next = prev;
-        return curr;
+        head->next = prev;
+        return {head,last};
     }
+
     ListNode* reverseKGroup(ListNode* head, int k) {
-        ListNode* dummy = new ListNode(0);
+        ListNode* dummy = new ListNode();
         dummy->next = head;
         ListNode* prev = dummy;
         ListNode* curr = head;
+        int i=1;
         while(curr){
-            int i=0;
-            ListNode* end = curr;
-            while(end and i<k-1){
-                end = end->next;
-                i++;
-            }
-            if(end){
-            ListNode* temp = end->next;
-            end->next = nullptr;
-            ListNode* r = reverseLL(curr);
-            prev->next =r;
-            curr->next =temp;
-            prev = curr;
-            curr = temp;
+            if(i==k){
+                ListNode* temp = curr->next;
+                curr->next = nullptr;
+                i=0;
+                auto p = reverseList(prev->next);
+                ListNode* first = p.first;
+                ListNode* last = p.second;
+                prev->next = first;
+                prev = last;
+                prev->next = temp;
+                curr = temp;
             }
             else{
-                curr = nullptr;
+                curr = curr->next;
             }
+            i++;
         }
         return dummy->next;
     }
