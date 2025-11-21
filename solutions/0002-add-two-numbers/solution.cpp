@@ -11,39 +11,57 @@
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        ListNode* l3 = new ListNode(0);
-        ListNode* ans = l3;
-        ListNode* prev = nullptr;
+        ListNode* dummy = new ListNode();
+        ListNode* ans = dummy;
         int carry = 0;
-        while(l1 or l2 or carry){
-            int a = 0;
-            if(l1){
-                a = l1->val;
-                l1 = l1->next;
-            }
-            int b = 0;
-            if(l2) {
-                b = l2->val;
-                l2 = l2->next;
-            }
-            int c = a+b+carry;
-            if(c>9){
-                 carry=1;
-                 c = c-10;
+        while(l1 and l2){
+            int value = l1->val + l2->val + carry;
+            if(value>=10){
+                  value = value-10;
+                carry = 1;
             }
             else{
-                carry=0;
+                carry = 0;
             }
-            l3->val = c;
-            l3->next = new ListNode(0);
-            prev = l3;
-            l3 = l3->next;
+            ListNode* newnode = new ListNode(value);
+            dummy->next = newnode;
+            dummy = newnode;
+            l1 = l1->next;
+            l2 = l2->next;
+        }
+        while(l1){
+             int value = l1->val + carry;
+            if(value>=10){
+                value = value-10;
+                carry = 1;
+            }
+            else{
+                carry = 0;
+            }
+            ListNode* newnode = new ListNode(value);
+            dummy->next = newnode;
+            dummy = newnode;
+            l1 = l1->next;
         }
 
+        while(l2){
+             int value = l2->val + carry;
+            if(value>=10){
+               value = value-10;
+                carry = 1;
+            }
+            else{
+                carry = 0;
+            }
+            ListNode* newnode = new ListNode(value);
+            dummy->next = newnode;
+            dummy = newnode;
+            l2 = l2->next;
+        }
 
-
-        prev->next = nullptr;
-        return ans;
-
+        if(carry!=0){
+            dummy->next = new ListNode(carry);
+        }
+        return ans->next;
     }
 };
