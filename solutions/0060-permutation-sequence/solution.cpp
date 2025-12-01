@@ -1,40 +1,34 @@
 class Solution {
 public:
-int fact(int k) {
-    if (k == 0 || k == 1) {
-        return 1;
+    int fact(int i){
+        if(i==0 or i==1) return 1;
+        return i*fact(i-1);
     }
-    return k * fact(k - 1);
-}
 
-    void solve(set<int>& s,int k,string& ans){
-        //take the smallest from set until you exceed count
-        if(s.size()==0 or k<=0){
-            return ;
-        }
-        int count = 0;
-        int t = s.size()-1;
-        int f = fact(t);
-        for(auto& item: s){
-            if(count+f < k){
-                count+= f;
-                continue;
+    string solve(string s, int k){
+        sort(s.begin(),s.end());
+        if(k<=1) return s;
+        //try to reduce k
+        int p = fact(s.size()-1);
+        int comb_sum = 0;
+        //when possible comb_sum exceeds required k, then only we take that item, and reduce prev sum
+
+        for(int i=0;i<s.size();i++){
+            if(comb_sum+p>=k){
+                swap(s[0],s[i]);
+                return s[0]+solve(s.substr(1),k-comb_sum);
             }
-            else{
-                ans+= to_string(item);
-                s.erase(item);
-                solve(s,k-count,ans);
-                return ;
-            }
+            comb_sum+=p;
         }
+        return s;
     }
+
     string getPermutation(int n, int k) {
-        string ans = "";
-        set<int> s;
+        string s = "";
         for(int i=1;i<=n;i++){
-            s.insert(i);
+            s+= to_string(i);
         }
-        solve(s,k,ans);
-        return ans;
+        sort(s.begin(),s.end());
+        return solve(s,k);
     }
 };
