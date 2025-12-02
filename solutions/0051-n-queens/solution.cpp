@@ -1,49 +1,56 @@
 class Solution {
 public:
-    vector<vector<string>> ans;
+    bool collision(vector<string>& board,int r, int col,int n){
+        //check upper board 
+        int col1 = col-1;
+        int col2 = col+1;
+        int row = r-1;
+        while(row>=0){
+            if(col1>=0 and board[row][col1]=='Q'){
+                return true;
+            }
+            if(col2<n and board[row][col2]=='Q'){
+                return true;
+            } 
+            if(board[row][col]=='Q'){
+                return true;
+            }
+            col1--;
+            col2++;
+            row--;
+        }
+        return false;
+    }
 
-    // Try to place queens row by row
-    void solve(vector<string>& board, int row) {
-        int n = board.size();
-        if (row == n) {            // found a valid board
+    void solve(vector<string>&board, vector<vector<string>>&ans,int row,int n){
+        //we want to put a queen in current row , then move to next row and fill there
+        if(row==n){
             ans.push_back(board);
             return;
         }
-
-        for (int col = 0; col < n; ++col) {
-            if (board[row][col] != '.') continue; // only place on '.'
-
-            // Check if placing here is safe (no queens above / diagonals)
-            if (!isSafe(board, row, col)) continue;
-
-            board[row][col] = 'Q';     // place
-            solve(board, row + 1);     // recurse
-            board[row][col] = '.';     // undo (backtrack)
+        //check if putting at block i , will it cross any exisiting queen
+        for(int i=0;i<n;i++){
+            //check if we can put the queen and move to next
+            if(!collision(board,row,i,n)){
+                board[row][i] = 'Q';
+                solve(board,ans,row+1,n);
+            }
+            // revert the board
+            board[row][i]='.';
         }
     }
 
-    bool isSafe(const vector<string>& board, int r, int c) {
-        int n = board.size();
-
-        // same column upward
-        for (int i = 0; i < r; ++i)
-            if (board[i][c] == 'Q') return false;
-
-        // diag up-left
-        for (int i = r - 1, j = c - 1; i >= 0 && j >= 0; --i, --j)
-            if (board[i][j] == 'Q') return false;
-
-        // diag up-right
-        for (int i = r - 1, j = c + 1; i >= 0 && j < n; --i, ++j)
-            if (board[i][j] == 'Q') return false;
-
-        return true;
-    }
-
     vector<vector<string>> solveNQueens(int n) {
-        vector<string> board(n, string(n, '.'));
-        solve(board, 0);
+        vector<string> v;
+        vector<vector<string>> ans;
+        for(int i=0;i<n;i++){
+            string s="";
+            for(int j=0;j<n;j++){
+                s+='.';
+            }
+            v.push_back(s);
+        }
+        solve(v,ans,0,n);
         return ans;
     }
 };
-
