@@ -1,30 +1,34 @@
 class Solution {
 public:
+
     bool checkValidString(string s) {
-        int opencount = 0;
-        for(int i=0;i<s.size();i++){
-            if(s[i]=='(' or s[i]=='*'){
-                opencount+=1;
+        int openCount = 0 ;
+        // left to right pass
+        for (auto c: s){
+            if(c==')'){
+                openCount--;
             }
-            else if(s[i]==')'){
-                opencount-=1;
+            else if(c=='(' or c=='*'){
+                openCount++;
             }
-            if(opencount<0){
-                return false;
-            }
+            if(openCount<0) return false;
         }
-        int closecount = 0;
+
+        int closeCount =0 ;
+        // right to left pass
         for(int i=s.size()-1;i>=0;i--){
-            if(s[i]==')' or s[i]=='*'){
-               closecount+=1;
+            char c= s[i];
+             if(c==')' or c=='*'){
+                closeCount++;
             }
-            else if(s[i]=='('){
-                closecount-=1;
+            else if(c=='('){
+                closeCount--;
             }
-            if(closecount<0){
+            if(closeCount<0){
                 return false;
             }
         }
+
         return true;
     }
 };
