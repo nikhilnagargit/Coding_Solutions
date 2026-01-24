@@ -1,32 +1,26 @@
 class Solution {
 public:
-    vector<string> actions = {"buy","sell","buy","sell"};
-    int solve(vector<int>& prices, int i,int a,vector<vector<int>>& dp){
-        
-        if(i==prices.size() or a==actions.size())return 0;
-
-        if(dp[i][a]!=-1) return dp[i][a];
-
-        if(actions[a]=="buy"){
-            int ans = INT_MIN;
-            //buy current and move to next for selling
-            ans = max(ans,solve(prices,i+1,a+1,dp)-prices[i]);
-            //don't buy move to next to buy
-            ans = max(ans,solve(prices,i+1,a,dp));
-            return dp[i][a]=ans;
+    int solve(vector<int>& prices, int pi, vector<int>& transactions, int ti,vector<vector<int>> & dp){
+        // all transactions completed
+        if(ti==transactions.size() or pi==prices.size()){
+            return 0;
         }
-        else{
-            int ans = INT_MIN;
-            //sell current and move next to buy
-            ans = max(ans,solve(prices,i+1,a+1,dp)+prices[i]);
-            //dont' sell  move next to sell
-            ans = max(ans,solve(prices,i+1,a,dp));
-            return dp[i][a]=ans;
+        if(dp[pi][ti]!=-1){
+            return dp[pi][ti];
         }
+    
+        // make the transaction
+        int a= prices[pi]*transactions[ti] + solve(prices,pi+1,transactions, ti+1,dp);
+        // skip the transaction
+        int b = solve(prices,pi+1,transactions,ti,dp);
+
+        return dp[pi][ti]= max(a,b);
     }
 
     int maxProfit(vector<int>& prices) {
-        vector<vector<int>> dp(prices.size(),vector<int>(actions.size(),-1));
-        return solve(prices,0,0,dp);
+        // -1 = buy , +1 = sell
+        vector<int> transactions = {-1,1,-1,1};
+        vector<vector<int>> dp(prices.size(), vector<int>(transactions.size(),-1));
+        return solve(prices,0,transactions,0,dp);
     }
 };
