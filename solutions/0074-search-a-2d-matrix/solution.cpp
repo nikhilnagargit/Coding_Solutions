@@ -6,29 +6,22 @@ public:
         int m = matrix[0].size();
 
         while(top<=bottom){
-            int midv = top + (bottom-top)/2;
-            if(matrix[midv][0]>target){
-                bottom = midv-1;
-            }
-            else if(matrix[midv][0]<=target and matrix[midv][m-1]>=target){
-                int left = 0;
-                int right = m-1;
-                while(left<=right){
-                    int mid = left + (right-left)/2;
-                    if(matrix[midv][mid]==target){
-                        return true;
-                    }
-                    else if(matrix[midv][mid]<target){
-                        left = mid+1;
-                    }
-                    else{
-                        right = mid-1;
-                    }
+            int mid = top + (bottom-top)/2;
+            // check if found
+            if(matrix[mid][0]==target) return true;
+            else if(matrix[mid][0]>target) bottom = mid-1;
+            else{
+                if(matrix[mid][m-1]==target) return true;
+                else if(matrix[mid][m-1]<target){
+                    top = mid+1;
                 }
-                return false;
-            }
-            else {
-                top = midv+1;
+                else{
+                    // search in that row
+                    for(int j=1;j<m-1;j++){
+                        if(matrix[mid][j]==target)return true;
+                    }
+                    return false;
+                }
             }
         }
         return false;
